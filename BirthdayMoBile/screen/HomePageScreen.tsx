@@ -14,15 +14,14 @@ export default function HomePageScreen() {
             fontSize: 24,
             padding: 20,
             textAlign: "center",
-            color: "white"
+            color: "black"
         },
     });
 
     return (
         <ScrollView indicatorStyle='white' showsVerticalScrollIndicator={false}>
             <View>
-                <Text style={styles.regularText}>Welcome to Birthday Party Booking App</Text>
-                <Text style={styles.regularText}>Login to continue</Text>
+                <Text style={styles.regularText}>Homepage screen</Text>
             </View>
         </ScrollView>
     )

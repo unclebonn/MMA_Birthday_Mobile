@@ -1,14 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import { SafeAreaProvider } from "react-native-safe-area-context"
-import WelcomeScreen from './screen/WelcomeScreen';
-import MenuItems from './components/MenuItems';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import LoginScreen from './screen/LoginScreen';
-import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import HomePageScreen from './screen/HomePageScreen';
+import LoginScreen from './screen/LoginScreen';
+import Profile from './screen/Profile/Profile';
+import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
 
 export default function App() {
 
@@ -22,42 +22,39 @@ export default function App() {
     }
   })
 
-  const Tab = createBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
   const Drawer = createDrawerNavigator();
+  const Tab = createBottomTabNavigator();
 
 
-  const WelcomeScreenTest = () => {
+  const TabNav = () => {
     return (
       <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen name='LoginScreen2' component={LoginScreen} />
-        <Tab.Screen name='WelcomeScreen2' component={WelcomeScreen} />
+        <Tab.Screen name='WelcomeScreen2' component={HomePageScreen} />
       </Tab.Navigator>
     )
   }
 
-
+  const DrawerNav = () => {
+    return (
+      <Drawer.Navigator screenOptions={{ headerTitle: "" }} initialRouteName='TabNav'>
+        <Drawer.Screen name='TabNav' component={TabNav} />
+        <Drawer.Screen name='Profile' component={Profile} />
+        <Drawer.Screen name='Booking History' component={BookingHistoryList} />
+      </Drawer.Navigator>
+    )
+  }
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <Header />
         <NavigationContainer>
-          <Drawer.Navigator screenOptions={{headerTitle:""}} initialRouteName='WelcomeScreen1'>
-            {/* <Drawer.Screen name='LoginScreen' component={WelcomeScreenTest} /> */}
-            <Drawer.Screen name='LoginScreen1' component={WelcomeScreenTest} />
-            <Drawer.Screen name='WelcomeScreen1' component={WelcomeScreenTest} />
-          </Drawer.Navigator>
-
+          <Stack.Navigator screenOptions={{ headerTitle: "Birthday Party Booking App" }} >
+            <Stack.Screen name='Drawer' component={DrawerNav} />
+          </Stack.Navigator>
         </NavigationContainer>
-        {/* <NavigationContainer>
-         
-        </NavigationContainer> */}
-        {/* <WelcomeScreen /> */}
       </View>
 
-
-      <View style={styles.footerContainer}>
-        <Footer />
-      </View>
       <StatusBar style="auto" />
 
     </SafeAreaProvider>

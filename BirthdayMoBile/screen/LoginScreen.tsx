@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, TextInput, Pressable, Button } from 'react-native'
 import React, { useState } from 'react'
 
+//Lemonroos's
 export default function LoginScreen() {
 
     const [account, setAccount] = useState("")

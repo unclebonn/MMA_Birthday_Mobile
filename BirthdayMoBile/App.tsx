@@ -1,17 +1,18 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DrawerContentScrollView, DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
+import { createRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import HomePageScreen from './screen/HomePageScreen';
-import LoginScreen from './screen/LoginScreen';
 import Profile from './screen/Profile/Profile';
-import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
+import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
 
-
+const navigationRef = createRef<NavigationContainerRef<string>>()
+const nav = () => navigationRef.current
 
 export default function App() {
 
@@ -29,6 +30,7 @@ export default function App() {
   const Drawer = createDrawerNavigator();
   const Tab = createBottomTabNavigator();
 
+  //Every SINGLE page 
   const HomeNav = () => {
     return (
       <Stack.Navigator screenOptions={{
@@ -38,7 +40,6 @@ export default function App() {
       </Stack.Navigator>
     )
   };
-
   const ProfileNav = () => {
     return (
       <Stack.Navigator screenOptions={{
@@ -49,59 +50,78 @@ export default function App() {
       </Stack.Navigator>
     )
   };
-  const BookingHistoryNav = () => {
+  const BookingHistoryListNav = () => {
     return (
       <Stack.Navigator screenOptions={{
         headerShown: false,
       }}>
         <Stack.Screen name="BookingHistoryList" component={BookingHistoryList} />
+      </Stack.Navigator>
+    )
+  };
+  const BookingDetailsNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
         <Stack.Screen name="BookingDetails" component={BookingDetails} />
       </Stack.Navigator>
     )
   };
 
+  //Every pages landed into the BottomTabs here in terms of StackNav, but only show what needed
   const TabNav = () => {
     return (
       <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen name='HomeNav' component={HomeNav} />
         <Tab.Screen name='ProfileNav' component={ProfileNav} />
+        <Tab.Screen name='BookingHistoryListNav' component={BookingHistoryListNav} options={{
+          tabBarButton: () => <View style={{ width: 0 }} />,
+          headerShown: false,
+        }} />
+        <Tab.Screen name='BookingDetailsNav' component={BookingDetailsNav} options={{
+          tabBarButton: () => <View style={{ width: 0 }} />,
+          headerShown: false,
+        }} />
       </Tab.Navigator>
     )
   }
 
-  // const DrawerNav = () => {
-  //   return (
-  //     <Drawer.Navigator screenOptions={{ headerTitle: "" }} initialRouteName='TabNav'>
-  //       <Drawer.Screen name='Home' component={TabNav} />
-  //       <Drawer.Screen name='BookingHistoryNav' component={BookingHistoryNav} />
-  //     </Drawer.Navigator>
-  //   )
-  // }
-  const CustomDrawerContent = () => {
-    const nav = useNavigation();
+  //Main component
+  const DrawerNav = ({ nav }: any) => {
+    return (
+      <Drawer.Navigator screenOptions={{ headerTitle: "" }} initialRouteName='TabNav'
+        drawerContent={(props) => <CustomDrawerContent {...props} nav={nav} />}
+      >
+        <Drawer.Screen name='Home' component={TabNav} />
+      </Drawer.Navigator>
+    )
+  }
+
+  //The left Sidebar
+  const CustomDrawerContent = (props: any) => {
     return (
       <DrawerContentScrollView>
         <DrawerItem
-          key='a'
+          key='profile'
           label={() => (
             <Text>
-              Test1
+              Profile
             </Text>
           )}
           onPress={() => {
-            console.log('clicked');
-            // nav.navigate('HomeNav')
+            props.navigation.navigate('ProfileNav')
           }
           }
         />
         <DrawerItem
-          key='b'
+          key='booking-history'
           label={() => (
             <Text>
-              Test2
+              Booking History
             </Text>
           )}
-          onPress={() => console.log('clicked')}
+          onPress={() => props.navigation.navigate('BookingHistoryListNav')}
         />
       </DrawerContentScrollView>
     )
@@ -109,17 +129,10 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <NavigationContainer>
-          {/* <Stack.Navigator screenOptions={{ headerTitle: "Birthday Party Booking App" }} >
-            <Stack.Screen name='Drawer' component={DrawerNav} />
-          </Stack.Navigator> */}
-          <Drawer.Navigator screenOptions={{ headerTitle: "" }} initialRouteName='TabNav'
-            drawerContent={CustomDrawerContent}>
-            <Drawer.Screen name='Home' component={TabNav} />
-          </Drawer.Navigator>
+        <NavigationContainer ref={navigationRef}>
+          <DrawerNav nav={nav} />
         </NavigationContainer>
       </View>
-
       <StatusBar style="auto" />
 
     </SafeAreaProvider>

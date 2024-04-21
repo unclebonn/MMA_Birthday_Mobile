@@ -10,6 +10,8 @@ import HomePageScreen from './screen/HomePageScreen';
 import Profile from './screen/Profile/Profile';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
+// import LoginScreen from './screen/LoginScreen';
+// import RegisterScreen from './screen/RegisterScreen';
 
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current

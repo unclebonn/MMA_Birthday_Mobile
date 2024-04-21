@@ -12,6 +12,8 @@ import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
 import RoomSearch from './screen/RoomSearch';
 import axios from 'axios';
+// import LoginScreen from './screen/LoginScreen';
+// import RegisterScreen from './screen/RegisterScreen';
 
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current

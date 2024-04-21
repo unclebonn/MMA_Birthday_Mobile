@@ -1,89 +1,154 @@
-import { View, Text, StyleSheet, ScrollView, TextInput, Pressable, Button } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { View, StyleSheet, Switch, TextInput, TouchableOpacity, Text, Image, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import axios, { AxiosResponse } from 'axios'; // import axios
 
-//Lemonroos's
+interface IResponseData {
+    id_token: string;
+    // add other fields if needed
+}
+
 export default function LoginScreen() {
-
-    const [account, setAccount] = useState("")
-    const [password, setPassword] = useState("")
-    const [showMenu, setShowMenu] = useState(false)
-
+    const [account, setAccount] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [rememberMe, setRememberMe] = useState<boolean>(false);
 
     const onChangeAccount = (value: string) => {
-        setAccount(value)
+        setAccount(value);
     }
 
     const onChangePassword = (value: string) => {
-        setPassword(value)
+        setPassword(value);
     }
 
-    // const onChangeMenu = () => {
-    //     setShowMenu(!showMenu)
-    // }
+    // Add a new function to handle login
+    const handleLogin = async () => {
+        try {
+            const response: AxiosResponse<IResponseData> = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authenticate', {
+                username: account,
+                password: password,
+                rememberMe: rememberMe
+            });
 
-
-    console.log(showMenu);
-
+            // handle your response here
+            console.log(response.data.id_token); // log the token
+        } catch (error: any) {
+            // handle error
+            Alert.alert('An error occurred!', error.message);
+        }
+    }
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: "green"
-        },
-        regularText: {
-            marginVertical: 8,
-            fontSize: 24,
+            justifyContent: 'center',
             padding: 20,
-            textAlign: "center",
-            color: "white"
+            backgroundColor: '#F5FCFF',
         },
-        inputBox: {
+        logo: {
+            width: 200,
+            alignSelf: 'center',
+            padding: 0,
+            margin: 0,
+        },
+        title: {
+            fontSize: 24,
+            marginBottom: 20,
+            textAlign: 'center',
+        },
+        input: {
+            flexDirection: 'row',
+            alignItems: 'center',
             height: 40,
-            margin: 12,
+            borderColor: 'gray',
             borderWidth: 1,
-            padding: 10,
-            fontSize: 16,
-            borderColor: "#EDEFEE",
-            backgroundColor: "#EDEFEE"
+            borderRadius: 10,
+            paddingLeft: 10,
+            marginBottom: 20,
         },
-        btnLogin: {
-            borderRadius: 50,
-            width: 150,
-            textAlign: "center",
-            backgroundColor: "#EE9972"
-        }
+        textInput: {
+            flex: 1,
+            padding: 10,
+            borderRightWidth: 1,
+            borderLeftWidth: 1,
+            borderColor: 'gray',
+        },
+        icon: {
+            padding: 10,
+        },
+        button: {
+            alignItems: 'center',
+            backgroundColor: '#3D56F0',
+            padding: 10,
+            borderRadius: 10,
+            marginTop: 20,
+        },
+        buttonText: {
+            fontSize: 18,
+            color: 'white',
+        },
+        switch: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 20,
+        },
+        signUp: {
+            marginTop: 20,
+            textAlign: 'center',
+        },
     });
-
     return (
-        <ScrollView indicatorStyle='white' showsVerticalScrollIndicator={false}>
-            <View>
-                <Text style={styles.regularText}>Welcome to Little Lemon</Text>
-                <Text style={styles.regularText}>Login to continue</Text>
+        <View style={styles.container}>
+            <Image
+                style={styles.logo}
+                resizeMode='contain'
+                source={require('../assets/eventHub.png')}
+            />
+            {/* <Text style={styles.title}>Welcome to MyApp!</Text> */}
+            <View style={styles.input}>
+                <Icon name="user" size={20} color="gray" style={styles.icon} />
                 <TextInput
-                    keyboardType='email-address'
-                    value={account}
-                    placeholder='First Name'
-                    style={styles.inputBox}
+                    style={styles.textInput}
                     onChangeText={onChangeAccount}
-                >
-                </TextInput>
-                <TextInput
-                    secureTextEntry={true}
-                    value={password}
-                    placeholder='Password'
-                    style={styles.inputBox}
-                    onChangeText={onChangePassword}
+                    value={account}
+                    placeholder="Username"
                 />
-
-
-
             </View>
-            <View style={{ "alignItems": "center" }}>
-                <Pressable style={styles.btnLogin}>
-                    <Button onPress={() => setShowMenu(!showMenu)} title={showMenu ? "Home" : "View Menu"} color={"#EE9972"}></Button>
-                </Pressable>
-
+            <View style={styles.input}>
+                <Icon name="lock" size={20} color="gray" style={styles.icon} />
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={onChangePassword}
+                    value={password}
+                    placeholder="Password"
+                    secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                    <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="gray" style={styles.icon} />
+                </TouchableOpacity>
             </View>
+            <View style={styles.switch}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-        </ScrollView>
-    )
+                    <Switch
+                        trackColor={{ true: "#3D56F0" }}
+                        thumbColor={rememberMe ? "" : "#f4f3f4"}
+                        onValueChange={setRememberMe}
+                        value={rememberMe}
+                    />
+                    <Text>Remember me</Text>
+                </View>
+                <Text style={{ color: '#3D56F0' }}>Forgot password?</Text>
+            </View>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => console.log(handleLogin)}
+            // onPress={handleLogin}
+            >
+                <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            <Text style={styles.signUp}>Don't have an account? <Text style={{ color: '#3D56F0' }}>Sign up</Text></Text>
+        </View>
+    );
 }

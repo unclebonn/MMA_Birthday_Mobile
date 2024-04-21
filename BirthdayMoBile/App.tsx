@@ -10,11 +10,24 @@ import HomePageScreen from './screen/HomePageScreen';
 import Profile from './screen/Profile/Profile';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
+import RoomSearch from './screen/RoomSearch';
+import axios from 'axios';
 // import LoginScreen from './screen/LoginScreen';
 // import RegisterScreen from './screen/RegisterScreen';
 
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
+
+const onRequestSuccess = (config: any) => {
+  // const token = cookie.get("jwt-token");  // cho nay thay vao asyncStorage
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhZG1pbiIsInVuaXF1ZV9uYW1lIjoidXNlci0yIiwiYXV0aCI6IlJPTEVfQURNSU4sUk9MRV9IT1NULFJPTEVfVVNFUiIsIm5iZiI6MTcxMzY5NTMzOSwiZXhwIjoxNzEzNzgxNzM5LCJpYXQiOjE3MTM2OTUzMzl9.WtW9WGT5eVxza4dpLlLKnp_MXi0ZLwm1veAGZyr-nNM';
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+};
+// Thêm interceptor cho các yêu cầu trước khi gửi
+axios.interceptors.request.use(onRequestSuccess);
 
 export default function App() {
 
@@ -39,6 +52,15 @@ export default function App() {
         headerShown: false,
       }}>
         <Stack.Screen name="Home" component={HomePageScreen} />
+      </Stack.Navigator>
+    )
+  };
+  const RoomSearchNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="RoomSearch" component={RoomSearch} />
       </Stack.Navigator>
     )
   };
@@ -77,6 +99,10 @@ export default function App() {
       <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen name='HomeNav' component={HomeNav} />
         <Tab.Screen name='ProfileNav' component={ProfileNav} />
+        <Tab.Screen name='RoomSearchNav' component={RoomSearchNav} options={{
+          tabBarButton: () => <View style={{ width: 0 }} />,
+          headerShown: false,
+        }} />
         <Tab.Screen name='BookingHistoryListNav' component={BookingHistoryListNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
@@ -92,7 +118,18 @@ export default function App() {
   //Main component
   const DrawerNav = ({ nav }: any) => {
     return (
-      <Drawer.Navigator screenOptions={{ headerTitle: "" }} initialRouteName='TabNav'
+      <Drawer.Navigator screenOptions={{
+        headerTitle: () =>
+          <>
+            <Text style={{ color: 'whitesmoke' }}>Chao xìn, Nguyen Van A</Text>
+            <Text style={{ color: 'whitesmoke' }}>Today is Friday in California</Text>
+          </>
+        ,
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: 'rgb(74,67,236)',
+        },
+      }} initialRouteName='TabNav'
         drawerContent={(props) => <CustomDrawerContent {...props} nav={nav} />}
       >
         <Drawer.Screen name='Home' component={TabNav} />

@@ -24,7 +24,7 @@ const onRequestSuccess = async (config: any) => {
   // const token = cookie.get("jwt-token");  // cho nay thay vao asyncStorage
   const data = await getData();
   // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhZG1pbiIsInVuaXF1ZV9uYW1lIjoidXNlci0yIiwiYXV0aCI6IlJPTEVfQURNSU4sUk9MRV9IT1NULFJPTEVfVVNFUiIsIm5iZiI6MTcxMzY5NTMzOSwiZXhwIjoxNzEzNzgxNzM5LCJpYXQiOjE3MTM2OTUzMzl9.WtW9WGT5eVxza4dpLlLKnp_MXi0ZLwm1veAGZyr-nNM';
-  const token = data ? data.concac : null
+  const token = data ? data.token : null
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
     console.log("BUBUBUBUHBUB exist (Comment khuc navifate nen co z fix lai)")

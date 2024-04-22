@@ -11,6 +11,7 @@ import Profile from './screen/Profile/Profile';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
 import RoomSearch from './screen/RoomSearch';
+import RoomDetails from './screen/User/RoomDetail/RoomDetails';
 import axios from 'axios';
 import React from 'react';
 // import LoginScreen from './screen/LoginScreen';
@@ -65,6 +66,15 @@ export default function App() {
       </Stack.Navigator>
     )
   };
+  const RoomDetailNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="RoomDetails" component={RoomDetails} />
+      </Stack.Navigator>
+    )
+  };
   const ProfileNav = () => {
     return (
       <Stack.Navigator screenOptions={{
@@ -112,6 +122,10 @@ export default function App() {
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
         }} />
+        <Tab.Screen name='RoomDetailNav' component={RoomDetailNav} options={{
+          tabBarButton: () => <View style={{ width: 0 }} />,
+          headerShown: false,
+        }}/>
       </Tab.Navigator>
     )
   }

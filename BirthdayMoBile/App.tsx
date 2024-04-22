@@ -17,6 +17,7 @@ import React from 'react';
 import LoginScreen from './screen/LoginScreen';
 import RegisterScreen from './screen/RegisterScreen';
 import { getData, logout } from './utils/asyncStorage';
+import RestrictionScreen from './screen/RestrictionScreen';
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
 
@@ -59,6 +60,9 @@ export default function App() {
           headerShown: false,
         }} component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Restrict" options={{
+          headerShown: false,
+        }} component={RestrictionScreen} />
       </Stack.Navigator>
     )
   }
@@ -133,8 +137,8 @@ export default function App() {
       <Tab.Navigator screenOptions={{ headerShown: false }}>
 
         {/* <Tab.Screen name='RegisterNav' component={RegisterNav} /> */}
-        <Tab.Screen name='HomeNav' component={HomeNav} options={{title:'Trang chủ'}}/>
-        <Tab.Screen name='ProfileNav' component={ProfileNav} options={{title:'Hồ sơ của tôi'}}/>
+        <Tab.Screen name='HomeNav' component={HomeNav} options={{ title: 'Trang chủ' }} />
+        <Tab.Screen name='ProfileNav' component={ProfileNav} options={{ title: 'Hồ sơ của tôi' }} />
         {/* <Tab.Screen name='RoomSearchNav' component={RoomSearchNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,

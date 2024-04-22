@@ -14,17 +14,20 @@ import RoomSearch from './screen/RoomSearch';
 import RoomDetails from './screen/User/RoomDetail/RoomDetails';
 import axios from 'axios';
 import React from 'react';
-// import LoginScreen from './screen/LoginScreen';
-// import RegisterScreen from './screen/RegisterScreen';
-
+import LoginScreen from './screen/LoginScreen';
+import RegisterScreen from './screen/RegisterScreen';
+import { getData } from './utils/asyncStorage';
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
 
-const onRequestSuccess = (config: any) => {
+const onRequestSuccess = async (config: any) => {
   // const token = cookie.get("jwt-token");  // cho nay thay vao asyncStorage
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhZG1pbiIsInVuaXF1ZV9uYW1lIjoidXNlci0yIiwiYXV0aCI6IlJPTEVfQURNSU4sUk9MRV9IT1NULFJPTEVfVVNFUiIsIm5iZiI6MTcxMzY5NTMzOSwiZXhwIjoxNzEzNzgxNzM5LCJpYXQiOjE3MTM2OTUzMzl9.WtW9WGT5eVxza4dpLlLKnp_MXi0ZLwm1veAGZyr-nNM';
+  const data = await getData();
+  // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhZG1pbiIsInVuaXF1ZV9uYW1lIjoidXNlci0yIiwiYXV0aCI6IlJPTEVfQURNSU4sUk9MRV9IT1NULFJPTEVfVVNFUiIsIm5iZiI6MTcxMzY5NTMzOSwiZXhwIjoxNzEzNzgxNzM5LCJpYXQiOjE3MTM2OTUzMzl9.WtW9WGT5eVxza4dpLlLKnp_MXi0ZLwm1veAGZyr-nNM';
+  const token = data ? data.concac : null
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log("BUBUBUBUHBUB exist (Comment khuc navifate nen co z fix lai)")
   }
   return config;
 };
@@ -125,7 +128,7 @@ export default function App() {
         <Tab.Screen name='RoomDetailNav' component={RoomDetailNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
-        }}/>
+        }} />
       </Tab.Navigator>
     )
   }
@@ -181,15 +184,16 @@ export default function App() {
     )
   }
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <NavigationContainer ref={navigationRef}>
-          <DrawerNav nav={nav} />
-        </NavigationContainer>
-      </View>
-      <StatusBar style="auto" />
+    // <SafeAreaProvider>
+    //   <View style={styles.container}>
+    //     <NavigationContainer ref={navigationRef}>
+    //       <DrawerNav nav={nav} />
+    //     </NavigationContainer>
+    //   </View>
+    //   <StatusBar style="auto" />
 
-    </SafeAreaProvider>
+    // </SafeAreaProvider>
+    <LoginScreen />
   );
 }
 

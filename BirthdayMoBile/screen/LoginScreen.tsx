@@ -2,27 +2,22 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Switch, TextInput, TouchableOpacity, Text, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios, { AxiosResponse } from 'axios'; // import axios
-
+import { storeData } from '../utils/asyncStorage';
 interface IResponseData {
     id_token: string;
-    // add other fields if needed
 }
-
 export default function LoginScreen() {
     const [account, setAccount] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [rememberMe, setRememberMe] = useState<boolean>(false);
-
     const onChangeAccount = (value: string) => {
         setAccount(value);
     }
-
     const onChangePassword = (value: string) => {
         setPassword(value);
     }
 
-    // Add a new function to handle login
     const handleLogin = async () => {
         try {
             const response: AxiosResponse<IResponseData> = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authenticate', {
@@ -30,12 +25,14 @@ export default function LoginScreen() {
                 password: password,
                 rememberMe: rememberMe
             });
+            const token = response.data.id_token;
+            // console.log(token); // log the token
 
-            // handle your response here
-            console.log(response.data.id_token); // log the token
+            // Store the token in AsyncStorage
+            await storeData({ concac: token });
+            console.log(token)
         } catch (error: any) {
-            // handle error
-            Alert.alert('An error occurred!', error.message);
+            Alert.alert('Fuck you motha fucka', error.message);
         }
     }
     const styles = StyleSheet.create({
@@ -143,8 +140,8 @@ export default function LoginScreen() {
             </View>
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => console.log(handleLogin)}
-            // onPress={handleLogin}
+                // onPress={() => console.log(handleLogin)}
+                onPress={handleLogin}
             >
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>

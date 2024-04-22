@@ -51,6 +51,27 @@ export default function App() {
   const Tab = createBottomTabNavigator();
 
   //Every SINGLE page 
+  const AuthNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        // headerShown: false,
+      }}>
+        <Stack.Screen name="Login" options={{
+          headerShown: false,
+        }} component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+      </Stack.Navigator>
+    )
+  }
+  const RegisterNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="Register" component={RegisterScreen} />
+      </Stack.Navigator>
+    )
+  }
   const HomeNav = () => {
     return (
       <Stack.Navigator screenOptions={{
@@ -111,6 +132,8 @@ export default function App() {
   const TabNav = () => {
     return (
       <Tab.Navigator screenOptions={{ headerShown: false }}>
+
+        {/* <Tab.Screen name='RegisterNav' component={RegisterNav} /> */}
         <Tab.Screen name='HomeNav' component={HomeNav} />
         <Tab.Screen name='ProfileNav' component={ProfileNav} />
         <Tab.Screen name='RoomSearchNav' component={RoomSearchNav} options={{
@@ -187,7 +210,8 @@ export default function App() {
     <SafeAreaProvider>
       <View style={styles.container}>
         <NavigationContainer ref={navigationRef}>
-          <Stack.Navigator initialRouteName='DrawerNav'>
+          <Stack.Navigator initialRouteName='AuthNav'>
+            <Stack.Screen name='AuthNav' component={AuthNav} options={{ headerShown: false }} />
             <Stack.Screen name='DrawerNav' component={DrawerNav} options={{ headerShown: false }} />
             <Stack.Screen name='RoomSearchNav' component={RoomSearchNav} />
             <Stack.Screen name='RoomDetailNav' component={RoomDetailNav} />

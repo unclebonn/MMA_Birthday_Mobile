@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Switch, TextInput, TouchableOpacity, Text, Image, Alert } from 'react-native';
+import { View, StyleSheet, Switch, TextInput, TouchableOpacity, Text, Image, Alert, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios, { AxiosResponse } from 'axios'; // import axios
 import { storeData } from '../utils/asyncStorage';
+import { useNavigation } from '@react-navigation/native';
+
 interface IResponseData {
     id_token: string;
 }
 export default function LoginScreen() {
+    const n = useNavigation<any>();
+
     const [account, setAccount] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -31,6 +35,7 @@ export default function LoginScreen() {
             // Store the token in AsyncStorage
             await storeData({ concac: token });
             console.log(token)
+            n.navigate('DrawerNav');
         } catch (error: any) {
             Alert.alert('Fuck you motha fucka', error.message);
         }
@@ -145,7 +150,10 @@ export default function LoginScreen() {
             >
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            <Text style={styles.signUp}>Don't have an account? <Text style={{ color: '#3D56F0' }}>Sign up</Text></Text>
-        </View>
+            <Text style={styles.signUp}>Don't have an account? <Pressable onPress={() => n.navigate('Register')}>
+                <Text style={{ color: '#3D56F0' }}>Sign up</Text>
+            </Pressable>
+            </Text>
+        </View >
     );
 }

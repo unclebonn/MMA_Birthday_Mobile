@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, Image, Alert } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text, Image, Alert, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios, { AxiosResponse } from 'axios'; // import axios
-
+import { useNavigation } from '@react-navigation/native';
 interface IRegisterData {
     id: string;
     login: string;
@@ -21,6 +21,7 @@ interface IRegisterData {
 }
 
 export default function RegisterScreen() {
+    const n = useNavigation<any>();
     const [registerData, setRegisterData] = useState<IRegisterData>({
         id: '',
         login: '',
@@ -120,16 +121,17 @@ export default function RegisterScreen() {
         signUp: {
             marginTop: 20,
             textAlign: 'center',
+
         },
     });
 
     return (
         <View style={styles.container}>
-            <Image
+            {/* <Image
                 style={styles.logo}
                 resizeMode='contain'
                 source={require('../assets/eventHub.png')}
-            />
+            /> */}
             <View style={styles.input}>
                 <Icon name="user" size={20} color="gray" style={styles.icon} />
                 <TextInput
@@ -199,7 +201,16 @@ export default function RegisterScreen() {
             >
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
-            <Text style={styles.signUp}>Already have an account? <Text style={{ color: '#3D56F0' }}>Login</Text></Text>
-        </View>
+            <View>
+
+                <Text style={styles.signUp}>Already have an account?
+                    <Pressable  onPress={() => n.navigate('Login')}>
+
+                        <Text style={{ color: '#3D56F0' }
+                        } > Login</Text>
+                    </Pressable>
+                </Text >
+            </View>
+        </View >
     );
 }

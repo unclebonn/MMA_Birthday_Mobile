@@ -127,7 +127,7 @@ export default function HomePageScreen() {
                 <SearchBar containerStyle={styles.inputBox}
                     inputContainerStyle={{ backgroundColor: 'inherit' }}
                     placeholder="Nhập tên phòng..."
-                    onFocus={(e) => nav.navigate('RoomSearchNav')}
+                    onFocus={() => nav.navigate('RoomSearchNav')}
                 />
                 <TouchableOpacity style={styles.button} onPress={() => nav.navigate('RoomSearchNav')}>
                     <Text style={styles.text}>Bộ lọc</Text>
@@ -164,9 +164,8 @@ export default function HomePageScreen() {
                             source={{ uri: 'https://www.cloudconsult.ca/public/no-search-found.png' }} />
                     }
                 </ScrollView>
-                <Card containerStyle={{ height: 250 }}>
-                    <Card.Title>Hello Mother Father</Card.Title>
-                </Card>
+                <Image style={{ borderWidth: 2, borderColor: 'grey', borderRadius: 50, width: '100%', height: 200, resizeMode: 'stretch' }}
+                    source={{ uri: 'https://th.bing.com/th/id/OIP.DS99NICY4syEu8BZ-83z9wHaEK?w=311&h=180&c=7&r=0&o=5&pid=1.7' }} />
             </View>
         </ScrollView>
     )

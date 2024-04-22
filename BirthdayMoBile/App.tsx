@@ -125,16 +125,16 @@ export default function App() {
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
         }} />
-        <Tab.Screen name='RoomDetailNav' component={RoomDetailNav} options={{
+        {/* <Tab.Screen name='RoomDetailNav' component={RoomDetailNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
-        }} />
+        }} /> */}
       </Tab.Navigator>
     )
   }
 
   //Main component
-  const DrawerNav = ({ nav }: any) => {
+  const DrawerNav = () => {
     return (
       <Drawer.Navigator screenOptions={{
         headerTitle: () =>
@@ -184,16 +184,20 @@ export default function App() {
     )
   }
   return (
-    // <SafeAreaProvider>
-    //   <View style={styles.container}>
-    //     <NavigationContainer ref={navigationRef}>
-    //       <DrawerNav nav={nav} />
-    //     </NavigationContainer>
-    //   </View>
-    //   <StatusBar style="auto" />
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <NavigationContainer ref={navigationRef}>
+          <Stack.Navigator initialRouteName='DrawerNav'>
+            <Stack.Screen name='DrawerNav' component={DrawerNav} options={{ headerShown: false }} />
+            <Stack.Screen name='RoomSearchNav' component={RoomSearchNav} />
+            <Stack.Screen name='RoomDetailNav' component={RoomDetailNav} />
+          </Stack.Navigator>
+          {/* <DrawerNav nav={nav} /> */}
+        </NavigationContainer>
+      </View>
+      <StatusBar style="auto" />
 
-    // </SafeAreaProvider>
-    <LoginScreen />
+    </SafeAreaProvider>
   );
 }
 

@@ -142,6 +142,12 @@ export default function RoomSearch() {
           <Text style={styles.text}>Bộ lọc</Text>
         </TouchableOpacity>
       </View>
+      {/* <FlatList
+                data={filteredWatches}
+                keyExtractor={(item, index) => index.toString()}
+                style={menuStyles.innerContainer}
+                renderItem={renderItem}
+            /> */}
       {(foundrooms && foundrooms.length > 0) ? foundrooms.map((room: Rooms) => (
         <View key={room.id} style={styles.listItem}>
           {/* Left column */}

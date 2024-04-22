@@ -27,7 +27,7 @@ const onRequestSuccess = async (config: any) => {
   const token = data ? data.concac : null
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log("BUBUBUBUHBUB"+token)
+    console.log("BUBUBUBUHBUB exist (Comment khuc navifate nen co z fix lai)")
   }
   return config;
 };

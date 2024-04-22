@@ -7,6 +7,7 @@ export const storeData = async (value: any) => {
         await AsyncStorage.setItem('token', jsonValue)
     } catch (e) {
         // saving error
+        console.error(e)
     }
 }
 export const getData = async () => {
@@ -15,5 +16,16 @@ export const getData = async () => {
         return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (e) {
         // error reading value
+        console.error(e)
+    }
+}
+
+export const logout = async () => {
+    try {
+        await AsyncStorage.removeItem('token')
+        .then(()=> console.log('Logged out'))
+    } catch (e) {
+        // error reading value
+        console.error(e)
     }
 }

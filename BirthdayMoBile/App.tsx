@@ -16,7 +16,7 @@ import axios from 'axios';
 import React from 'react';
 import LoginScreen from './screen/LoginScreen';
 import RegisterScreen from './screen/RegisterScreen';
-import { getData } from './utils/asyncStorage';
+import { getData, logout } from './utils/asyncStorage';
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
 
@@ -27,7 +27,6 @@ const onRequestSuccess = async (config: any) => {
   const token = data ? data.token : null
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log("BUBUBUBUHBUB exist (Comment khuc navifate nen co z fix lai)")
   }
   return config;
 };
@@ -134,12 +133,12 @@ export default function App() {
       <Tab.Navigator screenOptions={{ headerShown: false }}>
 
         {/* <Tab.Screen name='RegisterNav' component={RegisterNav} /> */}
-        <Tab.Screen name='HomeNav' component={HomeNav} />
-        <Tab.Screen name='ProfileNav' component={ProfileNav} />
-        <Tab.Screen name='RoomSearchNav' component={RoomSearchNav} options={{
+        <Tab.Screen name='HomeNav' component={HomeNav} options={{title:'Trang chủ'}}/>
+        <Tab.Screen name='ProfileNav' component={ProfileNav} options={{title:'Hồ sơ của tôi'}}/>
+        {/* <Tab.Screen name='RoomSearchNav' component={RoomSearchNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
-        }} />
+        }} /> */}
         <Tab.Screen name='BookingHistoryListNav' component={BookingHistoryListNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
@@ -202,6 +201,18 @@ export default function App() {
             </Text>
           )}
           onPress={() => props.navigation.navigate('BookingHistoryListNav')}
+        />
+        <DrawerItem
+          key='logout'
+          label={() => (
+            <Text>
+              Logout
+            </Text>
+          )}
+          onPress={() => {
+            logout();
+            props.navigation.navigate('AuthNav')
+          }}
         />
       </DrawerContentScrollView>
     )

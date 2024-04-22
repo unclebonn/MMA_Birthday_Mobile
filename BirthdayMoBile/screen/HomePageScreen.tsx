@@ -112,7 +112,6 @@ export default function HomePageScreen() {
         try {
             console.log('fetching');
             const res = await axios.get(roomUrl);
-            console.log(res.data);
             setRooms(res.data);
         } catch (error) {
             console.error(error);

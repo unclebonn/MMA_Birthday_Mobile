@@ -17,6 +17,8 @@ import React from 'react';
 import LoginScreen from './screen/LoginScreen';
 import RegisterScreen from './screen/RegisterScreen';
 import Wallet from './screen/User/Wallet/Wallet';
+import TransactionHistoryScreen from './screen/User/Wallet/TransactionHistoryScreen';
+
 import { getData, logout } from './utils/asyncStorage';
 import RestrictionScreen from './screen/RestrictionScreen';
 const navigationRef = createRef<NavigationContainerRef<string>>()
@@ -132,12 +134,22 @@ export default function App() {
     )
   };
 
+
   const WalletNav = () => {
     return (
       <Stack.Navigator screenOptions={{
         headerShown: false,
       }}>
         <Stack.Screen name="Wallet" component={Wallet} />
+      </Stack.Navigator>
+    )
+  };
+  const TransactionHistoryScreenNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="TransactionHistoryScreen" component={TransactionHistoryScreen} />
       </Stack.Navigator>
     )
   };
@@ -188,6 +200,8 @@ export default function App() {
         drawerContent={(props) => <CustomDrawerContent {...props} nav={nav} />}
       >
         <Drawer.Screen name='Home' component={TabNav} />
+        <Drawer.Screen name='TransactionHistory' component={TransactionHistoryScreen} />
+
       </Drawer.Navigator>
     )
   }
@@ -252,6 +266,9 @@ export default function App() {
             <Stack.Screen name='RoomSearchNav' component={RoomSearchNav} />
             <Stack.Screen name='RoomDetailNav' component={RoomDetailNav} />
             <Stack.Screen name='WalletNav' component={WalletNav} />
+            <Stack.Screen name='TransactionHistoryScreenNav' component={TransactionHistoryScreenNav} />
+
+
 
 
           </Stack.Navigator>

@@ -22,56 +22,56 @@ export default function LoginScreen() {
     const onChangePassword = (value: string) => {
         setPassword(value);
     }
-   const handleLogin = async () => {
-    // Reset errors
-    setAccountError(null);
-    setPasswordError(null);
-    setError(null);
+    const handleLogin = async () => {
+        // Reset errors
+        setAccountError(null);
+        setPasswordError(null);
+        setError(null);
 
-    // Check for empty fields and set corresponding errors
-    if (!account && !password) {
-        setError('Please enter your username and password.');
-        return;
-    }
-    if (!account) {
-        setAccountError('Please enter your username.');
-        return;
-    }
-    if (!password) {
-        setPasswordError('Please enter your password.');
-        return;
-    }
-
-    try {
-        const response: AxiosResponse<IResponseData> = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authenticate', {
-            username: account,
-            password: password,
-            rememberMe: rememberMe
-        });
-        const token = response.data.id_token;
-        await storeData({ token: token });
-        console.log(token)
-        // Get user roles
-        const rolesResponse = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/account');
-
-        // Check user roles
-        if (rolesResponse.data.authorities.length !== 1 || rolesResponse.data.authorities[0] !== 'ROLE_USER') {
-            // If user has more than one role or their role is not 'ROLE_USER', navigate to restriction screen
-            n.navigate('Restrict');
-        } else {
-            // If user has only 'ROLE_USER' role, navigate to main app
-            n.navigate('DrawerNav');
+        // Check for empty fields and set corresponding errors
+        if (!account && !password) {
+            setError('Please enter your username and password.');
+            return;
         }
-    } catch (error: any) {
-        if (error.response && error.response.status === 400) {
-            setError('User does not exist. Please check try again.');
-        } else if (error.response && error.response.status === 401) {
-            setError('Username or password is incorrect. Please try again.');
-        } else {
-            setError('An unexpected error occurred. Please try again later.');
+        if (!account) {
+            setAccountError('Please enter your username.');
+            return;
+        }
+        if (!password) {
+            setPasswordError('Please enter your password.');
+            return;
+        }
+
+        try {
+            const response: AxiosResponse<IResponseData> = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authenticate', {
+                username: account,
+                password: password,
+                rememberMe: rememberMe
+            });
+            const token = response.data.id_token;
+            await storeData({ token: token });
+            console.log(token)
+            // Get user roles
+            const rolesResponse = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/account');
+
+            // Check user roles
+            if (rolesResponse.data.authorities.length !== 1 || rolesResponse.data.authorities[0] !== 'ROLE_USER') {
+                // If user has more than one role or their role is not 'ROLE_USER', navigate to restriction screen
+                n.navigate('Restrict');
+            } else {
+                // If user has only 'ROLE_USER' role, navigate to main app
+                n.navigate('DrawerNav');
+            }
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                setError('User does not exist. Please check try again.');
+            } else if (error.response && error.response.status === 401) {
+                setError('Username or password is incorrect. Please try again.');
+            } else {
+                setError('An unexpected error occurred. Please try again later.');
+            }
         }
     }
-}
 
     const styles = StyleSheet.create({
         container: {
@@ -124,9 +124,9 @@ export default function LoginScreen() {
         },
         switch: {
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             alignItems: 'center',
-            marginBottom: 20,
+            margin: 20,
         },
         signUp: {
             marginTop: 20,
@@ -170,8 +170,14 @@ export default function LoginScreen() {
             </View>
             {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
             {error && <Text style={styles.errorText}>{error}</Text>}
+            <TouchableOpacity
+                style={styles.button}
+                onPress={handleLogin}
+            >
+                <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
             <View style={styles.switch}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                     <Switch
                         trackColor={{ true: "#3D56F0" }}
@@ -180,19 +186,14 @@ export default function LoginScreen() {
                         value={rememberMe}
                     />
                     <Text>Remember me</Text>
-                </View>
+                </View> */}
                 <Text style={{ color: '#3D56F0' }}>Forgot password?</Text>
             </View>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={handleLogin}
-            >
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <Text style={styles.signUp}>Don't have an account? <Pressable onPress={() => n.navigate('Register')}>
-                <Text style={{ color: '#3D56F0' }}>Sign up</Text>
+            <Pressable onPress={() => n.navigate('Register')}>
+                <Text style={styles.signUp}>Don't have an account?
+                    <Text style={{ color: '#3D56F0', padding: 0, margin: 0 }}> Register</Text>
+                </Text>
             </Pressable>
-            </Text>
         </View >
     );
 }

@@ -106,7 +106,7 @@ export default function RegisterScreen() {
         textInput: {
             flex: 1,
             padding: 10,
-            borderRightWidth: 1,
+            // borderRightWidth: 1,
             borderLeftWidth: 1,
             borderColor: 'gray',
         },
@@ -220,13 +220,11 @@ export default function RegisterScreen() {
             </TouchableOpacity>
             <View>
 
-                <Text style={styles.signUp}>Already have an account?
-                    <Pressable onPress={() => n.navigate('Login')}>
-
-                        <Text style={{ color: '#3D56F0' }
-                        } > Login</Text>
-                    </Pressable>
-                </Text >
+                <Pressable onPress={() => n.navigate('Register')}>
+                    <Text style={styles.signUp}>Already have an account?
+                        <Text style={{ color: '#3D56F0', padding: 0, margin: 0 }}> Login</Text>
+                    </Text>
+                </Pressable>
             </View>
         </View >
     );

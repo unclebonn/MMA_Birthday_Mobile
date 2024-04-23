@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { Card, Input } from '@rneui/base';
+import { Card } from '@rneui/base';
 import { SearchBar } from '@rneui/themed';
 import axios from 'axios';
 import React, { FunctionComponent, useEffect, useState } from 'react';
@@ -68,7 +68,8 @@ export default function HomePageScreen() {
             fontStyle: "italic",
         },
         inputBox: {
-            width: '80%',
+            width: '100%',
+            height: 60,
             borderRadius: 50,
             backgroundColor: 'lightgrey',
             borderWidth: 1,
@@ -128,9 +129,6 @@ export default function HomePageScreen() {
                     placeholder="Nhập tên phòng..."
                     onFocus={() => nav.navigate('RoomSearchNav')}
                 />
-                <TouchableOpacity style={styles.button} onPress={() => nav.navigate('RoomSearchNav')}>
-                    <Text style={styles.text}>Bộ lọc</Text>
-                </TouchableOpacity>
             </View>
             <View style={styles.content}>
                 <View style={styles.textHeader}>
@@ -139,11 +137,13 @@ export default function HomePageScreen() {
                         <Text style={styles.regularText}>Xem tất cả</Text>
                     </TouchableOpacity>
                 </View>
-                <ScrollView horizontal style={{ height: 450 }}>
+                <ScrollView horizontal style={{ height: 450, marginBottom: '5%' }}>
                     {(rooms && rooms.length > 0) ? rooms.map((room: Rooms) => (
                         <Card key={room?.id} containerStyle={styles.cardContainer}>
                             <View style={{ alignItems: "center" }}>
-                                <TouchableOpacity onPress={() => nav.navigate('RoomDetailNav')} style={{ width: '100%' }}>
+                                <TouchableOpacity onPress={() => nav.navigate('RoomDetailNav', {
+                                    room: room
+                                })} style={{ width: '100%' }}>
                                     <Image
                                         style={{ width: "100%", height: 150, marginVertical: 5, borderRadius: 20, borderWidth: 1, borderColor: 'blue' }}
                                         resizeMode="stretch"
@@ -163,8 +163,14 @@ export default function HomePageScreen() {
                             source={{ uri: 'https://www.cloudconsult.ca/public/no-search-found.png' }} />
                     }
                 </ScrollView>
-                <Image style={{ borderWidth: 2, borderColor: 'grey', borderRadius: 50, width: '100%', height: 200, resizeMode: 'stretch' }}
-                    source={{ uri: 'https://th.bing.com/th/id/OIP.DS99NICY4syEu8BZ-83z9wHaEK?w=311&h=180&c=7&r=0&o=5&pid=1.7' }} />
+                <View style={{ display: 'flex', height: 200 }}>
+                    <Image style={{ borderWidth: 2, borderColor: 'black', borderRadius: 50, width: '100%', height: '100%', resizeMode: 'stretch' }}
+                        source={{ uri: 'https://th.bing.com/th/id/OIP.DS99NICY4syEu8BZ-83z9wHaEK?w=311&h=180&c=7&r=0&o=5&pid=1.7' }} />
+                    <View style={{ width: '100%', alignItems: 'center', flexDirection: 'column', position: 'absolute', top: '25%', backgroundColor: 'rgba(138, 173, 143, 0.8)' }}>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', fontStyle: 'italic', color: 'yellow' }}>Ở đâu có tiệc</Text>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', fontStyle: 'italic', color: 'yellow' }}>Nơi đó có chúng tôi</Text>
+                    </View>
+                </View>
             </View>
         </ScrollView>
     )

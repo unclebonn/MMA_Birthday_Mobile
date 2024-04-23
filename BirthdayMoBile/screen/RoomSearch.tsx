@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 25,
   },
   inputBox: {
-    width: '80%',
+    width: '100%',
+    height: 60,
     borderRadius: 50,
     backgroundColor: 'lightgrey',
     borderWidth: 1,
@@ -110,7 +111,9 @@ const Item = ({ item }: any) => {
     <View key={item.id} style={styles.listItem}>
       {/* Left column */}
       <View>
-        <TouchableOpacity onPress={() => nav.navigate('RoomDetailNav')} style={{ width: '100%' }}>
+        <TouchableOpacity onPress={() => nav.navigate('RoomDetailNav', {
+          room: item
+        })} style={{ width: '100%' }}>
           <Image style={styles.image}
             source={{ uri: item?.imageURLs[0]?.imageUrl ? item?.imageURLs[0]?.imageUrl : "https://storage.googleapis.com/digital-platform/chiem_nguong_20_mau_biet_thu_dep_sang_trong_bac_nhat_so_2_18ef110d5e/chiem_nguong_20_mau_biet_thu_dep_sang_trong_bac_nhat_so_2_18ef110d5e.jpg" }} />
         </TouchableOpacity>
@@ -166,9 +169,6 @@ export default function RoomSearch() {
           onSubmitEditing={(e) => search()}
           value={searchTerm || ''}
         />
-        <TouchableOpacity style={styles.button} onPress={() => { }}>
-          <Text style={styles.text}>Bộ lọc</Text>
-        </TouchableOpacity>
       </View>
       <FlatList
         data={foundRooms}

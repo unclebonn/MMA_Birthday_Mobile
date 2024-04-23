@@ -2,22 +2,22 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DrawerContentScrollView, DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
-import { createRef } from 'react';
+import React, { createRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import HomePageScreen from './screen/HomePageScreen';
+import LoginScreen from './screen/LoginScreen';
 import Profile from './screen/Profile/Profile';
+import RegisterScreen from './screen/RegisterScreen';
+import RestrictionScreen from './screen/RestrictionScreen';
+import RoomSearch from './screen/RoomSearch';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
-import RoomSearch from './screen/RoomSearch';
 import RoomDetails from './screen/User/RoomDetail/RoomDetails';
-import axios from 'axios';
-import React from 'react';
-import LoginScreen from './screen/LoginScreen';
-import RegisterScreen from './screen/RegisterScreen';
 import { getData, logout } from './utils/asyncStorage';
-import RestrictionScreen from './screen/RestrictionScreen';
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
 
@@ -93,15 +93,15 @@ export default function App() {
       </Stack.Navigator>
     )
   };
-  const RoomDetailNav = () => {
-    return (
-      <Stack.Navigator screenOptions={{
-        headerShown: false,
-      }}>
-        <Stack.Screen name="RoomDetails" component={RoomDetails} />
-      </Stack.Navigator>
-    )
-  };
+  // const RoomDetailNav = () => {
+  //   return (
+  //     <Stack.Navigator screenOptions={{
+  //       headerShown: false,
+  //     }}>
+  //       <Stack.Screen name="RoomDetails" component={RoomDetails} />
+  //     </Stack.Navigator>
+  //   )
+  // };
   const ProfileNav = () => {
     return (
       <Stack.Navigator screenOptions={{
@@ -188,9 +188,12 @@ export default function App() {
         <DrawerItem
           key='profile'
           label={() => (
-            <Text>
-              Profile
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Icon name={'user'} style={{ marginRight: 10 }} size={30} />
+              <Text style={{ fontSize: 20 }}>
+                Hồ sơ của tôi
+              </Text>
+            </View>
           )}
           onPress={() => {
             props.navigation.navigate('ProfileNav')
@@ -200,18 +203,24 @@ export default function App() {
         <DrawerItem
           key='booking-history'
           label={() => (
-            <Text>
-              Booking History
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Icon name={'clock-rotate-left'} style={{ marginRight: 10 }} size={30} />
+              <Text style={{ fontSize: 20 }}>
+                Lịch sử đặt tiệc
+              </Text>
+            </View>
           )}
           onPress={() => props.navigation.navigate('BookingHistoryListNav')}
         />
         <DrawerItem
           key='logout'
           label={() => (
-            <Text>
-              Logout
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Icon name={'right-from-bracket'} style={{ marginRight: 10 }} size={30} />
+              <Text style={{ fontSize: 20 }}>
+                Đăng xuất
+              </Text>
+            </View>
           )}
           onPress={() => {
             logout();
@@ -228,10 +237,11 @@ export default function App() {
           <Stack.Navigator initialRouteName='AuthNav'>
             <Stack.Screen name='AuthNav' component={AuthNav} options={{ headerShown: false }} />
             <Stack.Screen name='DrawerNav' component={DrawerNav} options={{ headerShown: false }} />
-            <Stack.Screen name='RoomSearchNav' component={RoomSearchNav} />
-            <Stack.Screen name='RoomDetailNav' component={RoomDetailNav} />
+            <Stack.Screen name='RoomSearchNav' component={RoomSearchNav}
+              options={{ title: 'Tìm phòng', headerStyle: { backgroundColor: 'rgb(74,67,236)' } }} />
+            <Stack.Screen name='RoomDetailNav' component={RoomDetails}
+              options={{ title: 'Chi tiết phòng', headerStyle: { backgroundColor: 'rgb(74,67,236)' } }} />
           </Stack.Navigator>
-          {/* <DrawerNav nav={nav} /> */}
         </NavigationContainer>
       </View>
       <StatusBar style="auto" />

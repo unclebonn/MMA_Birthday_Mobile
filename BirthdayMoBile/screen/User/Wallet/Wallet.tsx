@@ -13,7 +13,9 @@ const Wallet = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const response = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/profile/balance');
+        const response = await axios.get(
+          'https://party-renting-platform-aa30573d1765.herokuapp.com/api/profile/balance'
+        );
         setBalance(response.data);
       } catch (error) {
         console.error('Error fetching balance:', error);
@@ -30,16 +32,14 @@ const Wallet = () => {
     try {
       const paymentData = {
         price: parseFloat(amount),
-        returnUrl: "string"
+        returnUrl: 'string',
       };
 
-      const response = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/vnpay/payment', paymentData);
-      console.log('Payment response 1 :', response.data);
-  
-        setPaymentUrl(response.data);
-        console.log('Payment response 2:', paymentUrl);
-
-     
+      const response = await axios.post(
+        'https://party-renting-platform-aa30573d1765.herokuapp.com/api/vnpay/payment',
+        paymentData
+      );
+      setPaymentUrl(response.data);
     } catch (error) {
       console.error('Error making payment:', error);
       Alert.alert('Thông báo', 'Có lỗi xảy ra khi tạo yêu cầu thanh toán');
@@ -48,7 +48,7 @@ const Wallet = () => {
     }
   };
 
-  const formatBalance = (balance) => {
+  const formatBalance = (balance: any) => {
     if (!balance) return '';
     return balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
@@ -68,14 +68,7 @@ const Wallet = () => {
             keyboardType="numeric"
           />
           <Button title="Nạp tiền" onPress={handlePayment} disabled={paymentLoading || !amount} />
-          {console.log("payment 3",paymentUrl)}
-        
-          {paymentUrl && (
-            <WebView
-              source={{ uri: paymentUrl }}
-              style={{ flex: 1 }}
-            />
-          )}
+          {paymentUrl && <WebView source={{ uri: paymentUrl }} style={{ flex: 1, width: 400 }} />}
         </>
       )}
     </View>

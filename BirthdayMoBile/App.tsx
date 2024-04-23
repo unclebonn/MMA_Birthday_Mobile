@@ -55,6 +55,11 @@ export default function App() {
     },
     footerContainer: {
       backgroundColor: "#EDEFEE"
+    },
+    icon: {
+      fontSize: 20,
+      color: 'grey',
+      marginHorizontal: 10
     }
   })
 
@@ -141,8 +146,16 @@ export default function App() {
       <Tab.Navigator screenOptions={{ headerShown: false }}>
 
         {/* <Tab.Screen name='RegisterNav' component={RegisterNav} /> */}
-        <Tab.Screen name='HomeNav' component={HomeNav} options={{ title: 'Trang chủ' }} />
-        <Tab.Screen name='ProfileNav' component={ProfileNav} options={{ title: 'Hồ sơ của tôi' }} />
+        <Tab.Screen name='HomeNav' component={HomeNav} options={{
+          title: 'Trang chủ',
+          tabBarIcon: () => <Icon name={'house'} style={styles.icon} />,
+          tabBarActiveBackgroundColor: 'rgba(192, 187, 190, 0.8)'
+        }} />
+        <Tab.Screen name='ProfileNav' component={ProfileNav} options={{
+          title: 'Hồ sơ của tôi',
+          tabBarIcon: () => <Icon name={'user'} style={styles.icon} />,
+          tabBarActiveBackgroundColor: 'rgba(192, 187, 190, 0.8)'
+        }} />
         {/* <Tab.Screen name='RoomSearchNav' component={RoomSearchNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
@@ -192,8 +205,8 @@ export default function App() {
         <DrawerItem
           key='profile'
           label={() => (
-            <View style={{ flexDirection: 'row' }}>
-              <Icon name={'user'} style={{ marginRight: 10 }} size={30} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name={'user'} style={styles.icon} />
               <Text style={{ fontSize: 20 }}>
                 Hồ sơ của tôi
               </Text>
@@ -207,8 +220,8 @@ export default function App() {
         <DrawerItem
           key='booking-history'
           label={() => (
-            <View style={{ flexDirection: 'row' }}>
-              <Icon name={'clock-rotate-left'} style={{ marginRight: 10 }} size={30} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name={'clock-rotate-left'} style={styles.icon} />
               <Text style={{ fontSize: 20 }}>
                 Lịch sử đặt tiệc
               </Text>
@@ -219,8 +232,8 @@ export default function App() {
         <DrawerItem
           key='logout'
           label={() => (
-            <View style={{ flexDirection: 'row' }}>
-              <Icon name={'right-from-bracket'} style={{ marginRight: 10 }} size={30} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name={'right-from-bracket'} style={styles.icon} />
               <Text style={{ fontSize: 20 }}>
                 Đăng xuất
               </Text>

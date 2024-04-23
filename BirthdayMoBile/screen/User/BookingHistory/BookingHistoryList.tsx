@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   NativeScrollEvent,
@@ -13,8 +13,9 @@ import {
 } from 'react-native';
 import axios, { AxiosResponse } from 'axios';
 import { Card } from '@rneui/base';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { Skeleton } from '@rneui/themed';
 
 function formatVNPrice(price: number): string {
   return new Intl.NumberFormat('vi-VN', {
@@ -69,25 +70,45 @@ function BookingStatus({ status }: BookingStatusType) {
   );
 }
 
+function BookingSkelection() {
+  return <Skeleton animation="wave" width={80} height={40} style={{ backgroundColor: '#FFF' }} />;
+}
+
 let prePage = 0;
 function getApiUrl(page: number): string {
   prePage = page;
-  return `https://party-renting-platform-aa30573d1765.herokuapp.com/api/bookings/customer?page=${page}&size=4`;
+  return `https://party-renting-platform-aa30573d1765.herokuapp.com/api/bookings/customer?page=${page}&size=4&sort=bookTime,desc`;
 }
 
 function BookingHistoryList() {
+  const [state, setState] = useState('initial');
   const navigation = useNavigation<any>();
   const [page, setPage] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      setState('mounted');
+      return () => {
+        setState('initial');
+      };
+    }, [])
+  );
+
   useEffect(() => {
-    (async () => {
-      console.log('hahaha');
-      setLoading(() => false);
-      await handlegetBookingData();
-    })();
-  }, []);
+    if (state == 'initial') {
+      prePage = 0;
+      setPage(0);
+      setData([]);
+      setLoading(false);
+    } else {
+      (async () => {
+        setLoading(() => false);
+        await handlegetBookingData();
+      })();
+    }
+  }, [state]);
 
   const handlegetBookingData = async () => {
     try {
@@ -140,7 +161,9 @@ function BookingHistoryList() {
                 renderRightActions={() => {
                   return (
                     <View style={styles.detailBtnWrapper}>
-                      <TouchableOpacity onPress={() => navigation.navigate('BookingDetailsNav')}>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate('BookingDetailsNav', { bookingId: item.id.toString() })}
+                      >
                         <Ionicons name="arrow-forward" size={32} />
                         <Text style={{ fontSize: 16, fontWeight: '600' }}>Detail</Text>
                       </TouchableOpacity>
@@ -173,6 +196,7 @@ function BookingHistoryList() {
               </Swipeable>
             );
           })}
+          <BookingSkelection />
         </View>
       </ScrollView>
     </>

@@ -8,7 +8,7 @@ export default function BookingHistoryList() {
   const nav = useNavigation<any>();
   return (
     <View>
-      <Button title={'To detail page'} onPress={() => nav.navigate('BookingDetails')}></Button>
+      <Button title={'To detail page'} onPress={() => nav.navigate('BookingDetailsNav')}></Button>
       <Text>Booking History List</Text>
     </View>
   )

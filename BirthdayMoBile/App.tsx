@@ -10,22 +10,29 @@ import HomePageScreen from './screen/HomePageScreen';
 import Profile from './screen/Profile/Profile';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
+import RoomSearch from './screen/RoomSearch';
+import RoomDetails from './screen/User/RoomDetail/RoomDetails';
 import axios from 'axios';
-
+import React from 'react';
+import LoginScreen from './screen/LoginScreen';
+import RegisterScreen from './screen/RegisterScreen';
+import { getData, logout } from './utils/asyncStorage';
+import RestrictionScreen from './screen/RestrictionScreen';
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
 
-
-// const onRequestSuccess = (config: any) => {
-//   // const token = cookie.get("jwt-token");  // cho nay thay vao asyncStorage
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// };
-// // Thêm interceptor cho các yêu cầu trước khi gửi
-// axios.interceptors.request.use(onRequestSuccess);
-
+const onRequestSuccess = async (config: any) => {
+  // const token = cookie.get("jwt-token");  // cho nay thay vao asyncStorage
+  const data = await getData();
+  // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhZG1pbiIsInVuaXF1ZV9uYW1lIjoidXNlci0yIiwiYXV0aCI6IlJPTEVfQURNSU4sUk9MRV9IT1NULFJPTEVfVVNFUiIsIm5iZiI6MTcxMzY5NTMzOSwiZXhwIjoxNzEzNzgxNzM5LCJpYXQiOjE3MTM2OTUzMzl9.WtW9WGT5eVxza4dpLlLKnp_MXi0ZLwm1veAGZyr-nNM';
+  const token = data ? data.token : null
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+};
+// Thêm interceptor cho các yêu cầu trước khi gửi
+axios.interceptors.request.use(onRequestSuccess);
 
 export default function App() {
 
@@ -44,12 +51,54 @@ export default function App() {
   const Tab = createBottomTabNavigator();
 
   //Every SINGLE page 
+  const AuthNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        // headerShown: false,
+      }}>
+        <Stack.Screen name="Login" options={{
+          headerShown: false,
+        }} component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Restrict" options={{
+          headerShown: false,
+        }} component={RestrictionScreen} />
+      </Stack.Navigator>
+    )
+  }
+  const RegisterNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="Register" component={RegisterScreen} />
+      </Stack.Navigator>
+    )
+  }
   const HomeNav = () => {
     return (
       <Stack.Navigator screenOptions={{
         headerShown: false,
       }}>
         <Stack.Screen name="Home" component={HomePageScreen} />
+      </Stack.Navigator>
+    )
+  };
+  const RoomSearchNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="RoomSearch" component={RoomSearch} />
+      </Stack.Navigator>
+    )
+  };
+  const RoomDetailNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="RoomDetails" component={RoomDetails} />
       </Stack.Navigator>
     )
   };
@@ -86,8 +135,14 @@ export default function App() {
   const TabNav = () => {
     return (
       <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen name='HomeNav' component={HomeNav} />
-        <Tab.Screen name='ProfileNav' component={ProfileNav} />
+
+        {/* <Tab.Screen name='RegisterNav' component={RegisterNav} /> */}
+        <Tab.Screen name='HomeNav' component={HomeNav} options={{ title: 'Trang chủ' }} />
+        <Tab.Screen name='ProfileNav' component={ProfileNav} options={{ title: 'Hồ sơ của tôi' }} />
+        {/* <Tab.Screen name='RoomSearchNav' component={RoomSearchNav} options={{
+          tabBarButton: () => <View style={{ width: 0 }} />,
+          headerShown: false,
+        }} /> */}
         <Tab.Screen name='BookingHistoryListNav' component={BookingHistoryListNav} options={{
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
@@ -96,14 +151,29 @@ export default function App() {
           tabBarButton: () => <View style={{ width: 0 }} />,
           headerShown: false,
         }} />
+        {/* <Tab.Screen name='RoomDetailNav' component={RoomDetailNav} options={{
+          tabBarButton: () => <View style={{ width: 0 }} />,
+          headerShown: false,
+        }} /> */}
       </Tab.Navigator>
     )
   }
 
   //Main component
-  const DrawerNav = ({ nav }: any) => {
+  const DrawerNav = () => {
     return (
-      <Drawer.Navigator screenOptions={{ headerTitle: "" }} initialRouteName='TabNav'
+      <Drawer.Navigator screenOptions={{
+        headerTitle: () =>
+          <>
+            <Text style={{ color: 'whitesmoke' }}>Chao xìn, Nguyen Van A</Text>
+            <Text style={{ color: 'whitesmoke' }}>Today is Friday in California</Text>
+          </>
+        ,
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: 'rgb(74,67,236)',
+        },
+      }} initialRouteName='TabNav'
         drawerContent={(props) => <CustomDrawerContent {...props} nav={nav} />}
       >
         <Drawer.Screen name='Home' component={TabNav} />
@@ -136,16 +206,33 @@ export default function App() {
           )}
           onPress={() => props.navigation.navigate('BookingHistoryListNav')}
         />
+        <DrawerItem
+          key='logout'
+          label={() => (
+            <Text>
+              Logout
+            </Text>
+          )}
+          onPress={() => {
+            logout();
+            props.navigation.navigate('AuthNav')
+          }}
+        />
       </DrawerContentScrollView>
     )
   }
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <Image source={{ uri: "https://akisa.vn/uploads/plugin/product_items/13906/mau-biet-thu-co-dien-3-tang-mai-thai-bt33595-v1.jpg", width: 100, height: 100 }} />
-        {/* <NavigationContainer ref={navigationRef}>
-          <DrawerNav nav={nav} />
-        </NavigationContainer> */}
+        <NavigationContainer ref={navigationRef}>
+          <Stack.Navigator initialRouteName='AuthNav'>
+            <Stack.Screen name='AuthNav' component={AuthNav} options={{ headerShown: false }} />
+            <Stack.Screen name='DrawerNav' component={DrawerNav} options={{ headerShown: false }} />
+            <Stack.Screen name='RoomSearchNav' component={RoomSearchNav} />
+            <Stack.Screen name='RoomDetailNav' component={RoomDetailNav} />
+          </Stack.Navigator>
+          {/* <DrawerNav nav={nav} /> */}
+        </NavigationContainer>
       </View>
       <StatusBar style="auto" />
 

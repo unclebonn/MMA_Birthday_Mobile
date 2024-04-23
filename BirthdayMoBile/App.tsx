@@ -4,7 +4,7 @@ import { NavigationContainer, NavigationContainerRef } from '@react-navigation/n
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
-import React, { createRef } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Icon from 'react-native-vector-icons/FontAwesome6';
@@ -24,7 +24,6 @@ const nav = () => navigationRef.current
 const onRequestSuccess = async (config: any) => {
   // const token = cookie.get("jwt-token");  // cho nay thay vao asyncStorage
   const data = await getData();
-  // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhZG1pbiIsInVuaXF1ZV9uYW1lIjoidXNlci0yIiwiYXV0aCI6IlJPTEVfQURNSU4sUk9MRV9IT1NULFJPTEVfVVNFUiIsIm5iZiI6MTcxMzY5NTMzOSwiZXhwIjoxNzEzNzgxNzM5LCJpYXQiOjE3MTM2OTUzMzl9.WtW9WGT5eVxza4dpLlLKnp_MXi0ZLwm1veAGZyr-nNM';
   const token = data ? data.token : null
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -35,6 +34,19 @@ const onRequestSuccess = async (config: any) => {
 axios.interceptors.request.use(onRequestSuccess);
 
 export default function App() {
+  const [initialRoute, setInitialRoute] = useState('AuthNav');
+
+  useEffect(() => {
+    const checkTokenExists = async () => {
+      const data = await getData();
+      const token = data ? data.token : null;
+      if (token) {
+        setInitialRoute('DrawerNav');
+      }
+    };
+    checkTokenExists();
+  }, []);
+
 
   const styles = StyleSheet.create({
     container: {
@@ -66,15 +78,7 @@ export default function App() {
       </Stack.Navigator>
     )
   }
-  const RegisterNav = () => {
-    return (
-      <Stack.Navigator screenOptions={{
-        headerShown: false,
-      }}>
-        <Stack.Screen name="Register" component={RegisterScreen} />
-      </Stack.Navigator>
-    )
-  }
+
   const HomeNav = () => {
     return (
       <Stack.Navigator screenOptions={{
@@ -234,7 +238,7 @@ export default function App() {
     <SafeAreaProvider>
       <View style={styles.container}>
         <NavigationContainer ref={navigationRef}>
-          <Stack.Navigator initialRouteName='AuthNav'>
+          <Stack.Navigator initialRouteName={initialRoute}>
             <Stack.Screen name='AuthNav' component={AuthNav} options={{ headerShown: false }} />
             <Stack.Screen name='DrawerNav' component={DrawerNav} options={{ headerShown: false }} />
             <Stack.Screen name='RoomSearchNav' component={RoomSearchNav}

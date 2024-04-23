@@ -52,16 +52,16 @@ export default function LoginScreen() {
             await storeData({ token: token });
             console.log(token)
             // Get user roles
-            const rolesResponse = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authorities');
+            // const rolesResponse = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authorities');
 
             // Check user roles
-            if (rolesResponse.data.length !== 1 || rolesResponse.data[0] !== 'ROLE_USER') {
-                // If user has more than one role or their role is not 'ROLE_USER', navigate to restriction screen
-                n.navigate('Restrict');
-            } else {
-                // If user has only 'ROLE_USER' role, navigate to main app
+            // if (rolesResponse.data.length !== 1 || rolesResponse.data[0] !== 'ROLE_USER') {
+            //     // If user has more than one role or their role is not 'ROLE_USER', navigate to restriction screen
+            //     n.navigate('Restrict');
+            // } else {
+            //     // If user has only 'ROLE_USER' role, navigate to main app
                 n.navigate('DrawerNav');
-            }
+            // }
         } catch (error: any) {
             if (error.response && error.response.status === 400) {
                 setError('User does not exist. Please check try again.');

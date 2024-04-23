@@ -16,6 +16,7 @@ import axios from 'axios';
 import React from 'react';
 import LoginScreen from './screen/LoginScreen';
 import RegisterScreen from './screen/RegisterScreen';
+import Wallet from './screen/User/Wallet/Wallet';
 import { getData, logout } from './utils/asyncStorage';
 import RestrictionScreen from './screen/RestrictionScreen';
 const navigationRef = createRef<NavigationContainerRef<string>>()
@@ -131,6 +132,16 @@ export default function App() {
     )
   };
 
+  const WalletNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="Wallet" component={Wallet} />
+      </Stack.Navigator>
+    )
+  };
+
   //Every pages landed into the BottomTabs here in terms of StackNav, but only show what needed
   const TabNav = () => {
     return (
@@ -206,6 +217,16 @@ export default function App() {
           )}
           onPress={() => props.navigation.navigate('BookingHistoryListNav')}
         />
+
+<DrawerItem
+          key='wallet'
+          label={() => (
+            <Text>
+              Ví của tôi
+            </Text>
+          )}
+          onPress={() => props.navigation.navigate('WalletNav')}
+        />
         <DrawerItem
           key='logout'
           label={() => (
@@ -230,6 +251,9 @@ export default function App() {
             <Stack.Screen name='DrawerNav' component={DrawerNav} options={{ headerShown: false }} />
             <Stack.Screen name='RoomSearchNav' component={RoomSearchNav} />
             <Stack.Screen name='RoomDetailNav' component={RoomDetailNav} />
+            <Stack.Screen name='WalletNav' component={WalletNav} />
+
+
           </Stack.Navigator>
           {/* <DrawerNav nav={nav} /> */}
         </NavigationContainer>

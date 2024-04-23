@@ -4,22 +4,35 @@ import { NavigationContainer, NavigationContainerRef } from '@react-navigation/n
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { createRef } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import HomePageScreen from './screen/HomePageScreen';
 import Profile from './screen/Profile/Profile';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
+import axios from 'axios';
 
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
+
+
+// const onRequestSuccess = (config: any) => {
+//   // const token = cookie.get("jwt-token");  // cho nay thay vao asyncStorage
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// };
+// // Thêm interceptor cho các yêu cầu trước khi gửi
+// axios.interceptors.request.use(onRequestSuccess);
+
 
 export default function App() {
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: "#333333"
+      // flex: 1,
+      // backgroundColor: "#333333"
     },
     footerContainer: {
       backgroundColor: "#EDEFEE"
@@ -129,9 +142,10 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <NavigationContainer ref={navigationRef}>
+        <Image source={{ uri: "https://akisa.vn/uploads/plugin/product_items/13906/mau-biet-thu-co-dien-3-tang-mai-thai-bt33595-v1.jpg", width: 100, height: 100 }} />
+        {/* <NavigationContainer ref={navigationRef}>
           <DrawerNav nav={nav} />
-        </NavigationContainer>
+        </NavigationContainer> */}
       </View>
       <StatusBar style="auto" />
 

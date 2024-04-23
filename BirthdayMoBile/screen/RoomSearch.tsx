@@ -2,8 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import { Image } from '@rneui/base';
 import { SearchBar } from '@rneui/themed';
 import axios from 'axios';
-import React, { FunctionComponent, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SelectCountry } from 'react-native-element-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 // Duy
@@ -44,19 +45,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 15,
-    height: 100,
+    padding: 25,
+    height: 80,
     backgroundColor: 'rgb(74,67,236)',
     borderBottomStartRadius: 25,
     borderBottomEndRadius: 25,
   },
   inputBox: {
-    width: '100%',
+    position: 'relative',
+    width: '60%',
     height: 60,
     borderRadius: 50,
     backgroundColor: 'lightgrey',
     borderWidth: 1,
-    margin: 12,
     color: 'white',
   },
   button: {
@@ -75,10 +76,11 @@ const styles = StyleSheet.create({
   },
   listItem: {
     borderWidth: 2,
+    width: 350,
     height: 180,
     flexDirection: 'row',
     backgroundColor: 'whitesmoke',
-    margin: 8,
+    margin: 10,
     borderRadius: 10,
     padding: '1%',
 
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch',
   },
   notFoundImg: {
-    width: '100%',
+    width: 350,
     height: 200,
     resizeMode: 'stretch',
   },
@@ -103,7 +105,28 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginRight: 15,
     color: 'green'
-  }
+  },
+  dropdown: {
+    margin: 5,
+    height: 50,
+    width: 150,
+    backgroundColor: 'whitesmoke',
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'grey',
+    paddingHorizontal: 8,
+  },
+  imageStyle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 15,
+  },
 });
 const Item = ({ item }: any) => {
   const nav = useNavigation<any>();
@@ -127,9 +150,68 @@ const Item = ({ item }: any) => {
     </View>
   )
 };
+const SelectSection = ({ foundRooms, setFoundRooms }: any) => {
+  const order = [
+    {
+      value: 'ascPrice',
+      lable: 'Giá tăng',
+    },
+    {
+      value: 'descPrice',
+      lable: 'Giá giảm',
+    },
+    {
+      value: 'ascCap',
+      lable: 'Sức chứa tăng',
+    },
+    {
+      value: 'descCap',
+      lable: 'Sức chứa giảm',
+    },
+  ];
+  const [sortOrder, setSortOrder] = useState('');
+
+  const sortType: any = {
+    ascPrice: (a: Rooms, b: Rooms) => a.price - b.price, // Sort in ascending order (Bad -> Good)
+    descPrice: (a: Rooms, b: Rooms) => b.price - a.price, // Sort in descending order (Good -> Bad)
+    ascCap: (a: Rooms, b: Rooms) => a.roomCapacity - b.roomCapacity, // Sort based on original order (Time based)
+    descCap: (a: Rooms, b: Rooms) => b.roomCapacity - a.roomCapacity, // Sort based on original order (Time based)
+  };
+
+  // Call the reOrderFeedbacks function with the desired order
+  const reOrderFeedbacks = () => {
+    if (foundRooms && sortType[sortOrder]) {
+      const sortedRooms = [...foundRooms].sort(sortType[sortOrder]);
+      setFoundRooms(sortedRooms);
+    }
+  };
+  useEffect(() => {
+    reOrderFeedbacks();
+  }, [sortOrder]);
+  useEffect(() => {
+    setFoundRooms(foundRooms);
+  }, [foundRooms]);
+  return (
+    <SelectCountry
+      style={styles.dropdown}
+      selectedTextStyle={styles.selectedTextStyle}
+      placeholderStyle={styles.placeholderStyle}
+      maxHeight={200}
+      value={sortOrder}
+      data={order}
+      imageField=''
+      placeholder='Sắp xếp theo'
+      valueField="value"
+      labelField="lable"
+      onChange={e => {
+        setSortOrder(e.value);
+      }}
+    />
+  );
+};
 export default function RoomSearch() {
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
-  const [foundRooms, setFoundRooms] = useState<Array<Rooms>>([]);
+  const [foundRooms, setFoundRooms] = useState<Rooms[]>([]);
   const search = async () => {
     try {
       if (searchTerm && searchTerm?.replace(/\s/g, "") == '') {
@@ -154,7 +236,7 @@ export default function RoomSearch() {
     return <Item item={item} />;
   };
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.header}>
         <SearchBar containerStyle={styles.inputBox}
           inputContainerStyle={{ backgroundColor: 'inherit' }}
@@ -169,15 +251,18 @@ export default function RoomSearch() {
           onSubmitEditing={(e) => search()}
           value={searchTerm || ''}
         />
+        {foundRooms && <SelectSection foundRooms={foundRooms} setFoundRooms={setFoundRooms} />}
       </View>
-      <FlatList
-        data={foundRooms}
-        keyExtractor={(item, index) => index.toString()}
-        style={styles.innerContainer}
-        ListEmptyComponent={<Image style={styles.notFoundImg}
-          source={{ uri: 'https://www.cloudconsult.ca/public/no-search-found.png' }} />}
-        renderItem={renderItem}
-      />
+      <ScrollView horizontal={true}>
+        <FlatList nestedScrollEnabled={true}
+          data={foundRooms}
+          keyExtractor={(item, index) => index.toString()}
+          style={styles.innerContainer}
+          ListEmptyComponent={<Image style={styles.notFoundImg}
+            source={{ uri: 'https://www.cloudconsult.ca/public/no-search-found.png' }} />}
+          renderItem={renderItem}
+        />
+      </ScrollView>
     </View>
   )
 }

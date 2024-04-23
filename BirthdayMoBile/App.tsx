@@ -48,6 +48,19 @@ export default function App() {
   }, []);
 
 
+  const profileUrl = 'https://party-renting-platform-aa30573d1765.herokuapp.com/api/account';
+  const [userName, setUserName] = useState<string | null>(null);
+  const getUserName = async () => {
+    try {
+        const res = await axios.get(profileUrl);
+        console.log(res.data)
+        setUserName(res.data.firstName);
+    } catch { (e: string) => console.error(e) }
+  }
+  useEffect(() => {
+    getUserName()
+  }, [userName]);
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -181,10 +194,9 @@ export default function App() {
     return (
       <Drawer.Navigator screenOptions={{
         headerTitle: () =>
-          <>
-            <Text style={{ color: 'whitesmoke' }}>Chao xìn, Nguyen Van A</Text>
-            <Text style={{ color: 'whitesmoke' }}>Today is Friday in California</Text>
-          </>
+          <View>
+            <Text style={{ color: 'whitesmoke', fontSize:25, textAlign:'center' }}>Chao xìn, {userName}</Text>
+          </View>
         ,
         headerTintColor: 'white',
         headerStyle: {

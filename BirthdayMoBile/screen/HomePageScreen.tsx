@@ -168,7 +168,7 @@ export default function HomePageScreen() {
                         source={{ uri: 'https://th.bing.com/th/id/OIP.DS99NICY4syEu8BZ-83z9wHaEK?w=311&h=180&c=7&r=0&o=5&pid=1.7' }} />
                     <View style={{ width: '70%', alignItems: 'center', flexDirection: 'column', position: 'absolute', top: '25%', left: '15%', backgroundColor: 'rgba(138, 173, 143, 0.8)', transform: [{ rotateX: '40deg' }, { rotateZ: '20deg' }] }}>
                         <Text style={{ fontSize: 30, fontWeight: 'bold', fontStyle: 'italic', color: 'yellow' }}>Ở đâu có tiệc</Text>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', fontStyle: 'italic', color: 'yellow' }}>Ở đó có chúng tui</Text>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', fontStyle: 'italic', color: 'yellow' }}>Ở đó có tụi tui</Text>
                     </View>
                 </View>
             </View>

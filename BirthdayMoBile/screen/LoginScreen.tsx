@@ -22,56 +22,57 @@ export default function LoginScreen() {
     const onChangePassword = (value: string) => {
         setPassword(value);
     }
-    const handleLogin = async () => {
-        // Reset errors
-        setAccountError(null);
-        setPasswordError(null);
-        setError(null);
+   const handleLogin = async () => {
+    // Reset errors
+    setAccountError(null);
+    setPasswordError(null);
+    setError(null);
 
-        // Check for empty fields and set corresponding errors
-        if (!account && !password) {
-            setError('Please enter your username and password.');
-            return;
-        }
-        if (!account) {
-            setAccountError('Please enter your username.');
-            return;
-        }
-        if (!password) {
-            setPasswordError('Please enter your password.');
-            return;
-        }
+    // Check for empty fields and set corresponding errors
+    if (!account && !password) {
+        setError('Please enter your username and password.');
+        return;
+    }
+    if (!account) {
+        setAccountError('Please enter your username.');
+        return;
+    }
+    if (!password) {
+        setPasswordError('Please enter your password.');
+        return;
+    }
 
-        try {
-            const response: AxiosResponse<IResponseData> = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authenticate', {
-                username: account,
-                password: password,
-                rememberMe: rememberMe
-            });
-            const token = response.data.id_token;
-            await storeData({ token: token });
-            console.log(token)
-            // Get user roles
-            const rolesResponse = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authorities');
+    try {
+        const response: AxiosResponse<IResponseData> = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/authenticate', {
+            username: account,
+            password: password,
+            rememberMe: rememberMe
+        });
+        const token = response.data.id_token;
+        await storeData({ token: token });
+        console.log(token)
+        // Get user roles
+        const rolesResponse = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/account');
 
-            // Check user roles
-            if (rolesResponse.data.length !== 1 || rolesResponse.data[0] !== 'ROLE_USER') {
-                // If user has more than one role or their role is not 'ROLE_USER', navigate to restriction screen
-                n.navigate('Restrict');
-            } else {
-                // If user has only 'ROLE_USER' role, navigate to main app
-                n.navigate('DrawerNav');
-            }
-        } catch (error: any) {
-            if (error.response && error.response.status === 400) {
-                setError('User does not exist. Please check try again.');
-            } else if (error.response && error.response.status === 401) {
-                setError('Username or password is incorrect. Please try again.');
-            } else {
-                setError('An unexpected error occurred. Please try again later.');
-            }
+        // Check user roles
+        if (rolesResponse.data.authorities.length !== 1 || rolesResponse.data.authorities[0] !== 'ROLE_USER') {
+            // If user has more than one role or their role is not 'ROLE_USER', navigate to restriction screen
+            n.navigate('Restrict');
+        } else {
+            // If user has only 'ROLE_USER' role, navigate to main app
+            n.navigate('DrawerNav');
+        }
+    } catch (error: any) {
+        if (error.response && error.response.status === 400) {
+            setError('User does not exist. Please check try again.');
+        } else if (error.response && error.response.status === 401) {
+            setError('Username or password is incorrect. Please try again.');
+        } else {
+            setError('An unexpected error occurred. Please try again later.');
         }
     }
+}
+
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -103,7 +104,7 @@ export default function LoginScreen() {
         textInput: {
             flex: 1,
             padding: 10,
-            borderRightWidth: 1,
+            // borderRightWidth: 1,
             borderLeftWidth: 1,
             borderColor: 'gray',
         },

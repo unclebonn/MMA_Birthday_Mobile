@@ -18,6 +18,7 @@ import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
 import RoomDetails from './screen/User/RoomDetail/RoomDetails';
 import { getData, logout } from './utils/asyncStorage';
+import ToastManager from 'toastify-react-native';
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
 
@@ -52,9 +53,9 @@ export default function App() {
   const [userName, setUserName] = useState<string | null>(null);
   const getUserName = async () => {
     try {
-        const res = await axios.get(profileUrl);
-        console.log(res.data)
-        setUserName(res.data.firstName);
+      const res = await axios.get(profileUrl);
+      console.log(res.data)
+      setUserName(res.data.firstName);
     } catch { (e: string) => console.error(e) }
   }
   useEffect(() => {
@@ -195,7 +196,7 @@ export default function App() {
       <Drawer.Navigator screenOptions={{
         headerTitle: () =>
           <View>
-            <Text style={{ color: 'whitesmoke', fontSize:25, textAlign:'center' }}>Chao xìn, {userName}</Text>
+            <Text style={{ color: 'whitesmoke', fontSize: 25, textAlign: 'center' }}>Chao xìn, {userName}</Text>
           </View>
         ,
         headerTintColor: 'white',
@@ -261,6 +262,7 @@ export default function App() {
   }
   return (
     <SafeAreaProvider>
+      <ToastManager />
       <View style={styles.container}>
         <NavigationContainer ref={navigationRef}>
           <Stack.Navigator initialRouteName={initialRoute}>

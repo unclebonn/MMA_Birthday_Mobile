@@ -16,6 +16,7 @@ import { Card } from '@rneui/base';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Skeleton } from '@rneui/themed';
+import { handleBookingDetailsId } from '../../../utils/zuestand';
 
 function formatVNPrice(price: number): string {
   return new Intl.NumberFormat('vi-VN', {
@@ -71,7 +72,17 @@ function BookingStatus({ status }: BookingStatusType) {
 }
 
 function BookingSkelection() {
-  return <Skeleton animation="wave" width={80} height={40} style={{ backgroundColor: '#FFF' }} />;
+  return (
+    <Card>
+      <Skeleton width={300} height={24} />
+      <View style={{ marginTop: 10, marginBottom: 10, gap: 5 }}>
+        <Skeleton width={200} height={22} />
+        <Skeleton width={125} height={22} />
+        <Skeleton width={200} height={22} />
+      </View>
+      <Skeleton width={110} height={36} />
+    </Card>
+  );
 }
 
 let prePage = 0;
@@ -86,6 +97,7 @@ function BookingHistoryList() {
   const [page, setPage] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const setBookingId = handleBookingDetailsId((state) => state.setBookingId);
 
   useFocusEffect(
     useCallback(() => {
@@ -104,7 +116,7 @@ function BookingHistoryList() {
       setLoading(false);
     } else {
       (async () => {
-        setLoading(() => false);
+        setLoading(() => true);
         await handlegetBookingData();
       })();
     }
@@ -114,12 +126,12 @@ function BookingHistoryList() {
     try {
       const response: AxiosResponse = await axios.get(getApiUrl(page));
       if (response.data && response.data.length > 0) {
-        console.log('//////////////////Fetch bookings at page: ' + page + '//////////////////');
+        // console.log('//////////////////Fetch bookings at page: ' + page + '//////////////////');
         const newData = [...data, ...response.data] as any;
         setData(newData);
         setPage((prePage) => prePage + 1);
       } else {
-        console.log('///////////////End call bookings api at page: ' + page + '///////////////');
+        // console.log('///////////////End call bookings api at page: ' + page + '///////////////');
       }
     } catch (error: any) {
       Alert.alert('Error', error.message);
@@ -154,49 +166,63 @@ function BookingHistoryList() {
       </View>
       <ScrollView onScroll={handleScroll}>
         <View style={{ backgroundColor: '#F8F4FA', marginBottom: 20 }}>
-          {data.map((item: any) => {
-            return (
-              <Swipeable
-                key={item.id}
-                renderRightActions={() => {
-                  return (
-                    <View style={styles.detailBtnWrapper}>
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate('BookingDetailsNav', { bookingId: item.id.toString() })}
-                      >
-                        <Ionicons name="arrow-forward" size={32} />
-                        <Text style={{ fontSize: 16, fontWeight: '600' }}>Detail</Text>
-                      </TouchableOpacity>
-                    </View>
-                  );
-                }}
-              >
-                <Card>
-                  <View style={styles.roomNameWrapper}>
-                    <Text style={styles.roomName}>{item.room.roomName}</Text>
-                  </View>
-                  <View style={styles.infoWrapper}>
-                    <View style={styles.infoItem}>
-                      <Text style={[styles.textInfoItem, { fontWeight: 'bold' }]}>Tên khách hàng: </Text>
-                      <Text style={styles.textInfoItem}>{item.customerName}</Text>
-                    </View>
-                    <View style={styles.infoItem}>
-                      <Text style={[styles.textInfoItem, { fontWeight: 'bold' }]}>Giá: </Text>
-                      <Text style={styles.textInfoItem}>{formatVNPrice(item.totalPrice)}</Text>
-                    </View>
-                    <View style={styles.infoItem}>
-                      <Text style={[styles.textInfoItem, { fontWeight: 'bold' }]}>Ngày đặt: </Text>
-                      <Text style={styles.textInfoItem}>{formatVNDate(item.bookTime)}</Text>
-                    </View>
-                  </View>
-                  <View>
-                    <BookingStatus status={item.status} />
-                  </View>
-                </Card>
-              </Swipeable>
-            );
-          })}
-          <BookingSkelection />
+          {loading && data.length == 0 ? (
+            <View>
+              <BookingSkelection />
+              <BookingSkelection />
+              <BookingSkelection />
+            </View>
+          ) : (
+            <>
+              {data.map((item: any) => {
+                return (
+                  <Swipeable
+                    key={item.id}
+                    renderRightActions={() => {
+                      return (
+                        <View style={styles.detailBtnWrapper}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setBookingId(item.id);
+                              navigation.navigate('BookingDetailsNav');
+                            }}
+                            style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}
+                          >
+                            <Ionicons name="arrow-forward" size={32} />
+                            <Text style={{ fontSize: 16, fontWeight: '600' }}>Detail</Text>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    }}
+                  >
+                    <Card>
+                      <View style={styles.roomNameWrapper}>
+                        <Text style={styles.roomName}>{item.room.roomName}</Text>
+                      </View>
+                      <View style={styles.infoWrapper}>
+                        <View style={styles.infoItem}>
+                          <Text style={[styles.textInfoItem, { fontWeight: 'bold' }]}>Tên khách hàng: </Text>
+                          <Text style={styles.textInfoItem}>{item.customerName}</Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                          <Text style={[styles.textInfoItem, { fontWeight: 'bold' }]}>Giá: </Text>
+                          <Text style={styles.textInfoItem}>{formatVNPrice(item.totalPrice)}</Text>
+                        </View>
+                        <View style={styles.infoItem}>
+                          <Text style={[styles.textInfoItem, { fontWeight: 'bold' }]}>Ngày đặt: </Text>
+                          <Text style={styles.textInfoItem}>{formatVNDate(item.bookTime)}</Text>
+                        </View>
+                      </View>
+                      <View>
+                        <BookingStatus status={item.status} />
+                      </View>
+                    </Card>
+                  </Swipeable>
+                );
+              })}
+              {loading && <BookingSkelection />}
+            </>
+          )}
         </View>
       </ScrollView>
     </>

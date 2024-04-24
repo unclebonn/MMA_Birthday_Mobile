@@ -84,7 +84,8 @@ export default function LoginScreen() {
       backgroundColor: '#F5FCFF',
     },
     logo: {
-      width: 200,
+      width: 400,
+      height: 300,
       alignSelf: 'center',
       padding: 0,
       margin: 0,
@@ -144,7 +145,7 @@ export default function LoginScreen() {
   });
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} resizeMode="contain" source={require('../assets/eventHub.png')} />
+      <Image style={styles.logo} resizeMode="stretch" source={require('../assets/partyRenting.png')} />
       <View style={[styles.input, accountError || error ? styles.errorInput : null]}>
         <Icon name="user" size={20} color="gray" style={styles.icon} />
         <TextInput style={styles.textInput} onChangeText={onChangeAccount} value={account} placeholder="Username" />

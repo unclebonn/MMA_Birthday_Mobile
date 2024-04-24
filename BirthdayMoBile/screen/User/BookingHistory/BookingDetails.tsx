@@ -1,12 +1,13 @@
-import { View, Text, BackHandler, StyleSheet, Pressable, ScrollView } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, BackHandler, StyleSheet, Pressable, ScrollView, Alert } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { handleBookingDetailsId } from '../../../utils/zuestand';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import StepIndicator from 'react-native-step-indicator';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Card } from '@rneui/base';
+import { Skeleton } from '@rneui/themed';
 
 const firstIndicatorStyles = {
   stepIndicatorSize: 30,
@@ -95,6 +96,40 @@ function getCurrentStepIndex(status: 'APPROVING' | 'ACCEPTED' | 'SUCCESS' | 'CAN
   }
 }
 
+function BookingDetailsSkelecton() {
+  return (
+    <View style={{ alignItems: 'center', gap: 20 }}>
+      <Skeleton width={380} height={35} />
+      <Skeleton width={320} height={30} />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Skeleton circle width={32} height={32} />
+        <Skeleton width={73} height={5} />
+        <Skeleton circle width={32} height={32} />
+        <Skeleton width={73} height={5} />
+        <Skeleton circle width={32} height={32} />
+        <Skeleton width={73} height={5} />
+        <Skeleton circle width={32} height={32} />
+      </View>
+      <Skeleton width={380} height={500}></Skeleton>
+    </View>
+  );
+}
+
+function isCurrentTimeGreaterOrEqual(dateString: string) {
+  // Tạo đối tượng Date từ chuỗi thời gian
+  const dateTime = new Date(dateString);
+
+  // Tạo đối tượng Date cho thời gian hiện tại
+  const currentTime = new Date();
+
+  // So sánh thời gian
+  if (currentTime >= dateTime) {
+    return true; // Thời gian hiện tại lớn hơn hoặc bằng thời gian trong chuỗi
+  } else {
+    return false; // Thời gian hiện tại nhỏ hơn thời gian trong chuỗi
+  }
+}
+
 export default function BookingDetails() {
   const navigation = useNavigation<any>();
   const bookingId = handleBookingDetailsId((state) => state.bookingId);
@@ -102,6 +137,7 @@ export default function BookingDetails() {
   const [data, setData] = useState<any>(null);
   const isApproving = data?.status === 'APPROVING';
   const isSuccess = data?.status === 'SUCCESS';
+  const isRejected = data?.status === 'REJECTED';
   const isCancel = data?.status === 'CANCEL';
   const isAccepted = data?.status === 'ACCEPTED';
   const stepLabels = isCancel
@@ -116,6 +152,15 @@ export default function BookingDetails() {
     : 0;
 
   const [currentPosition, setCurrentPosition] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setData(null);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const backAction = () => {
@@ -125,6 +170,7 @@ export default function BookingDetails() {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     (async () => {
+      setLoading(true);
       if (bookingId) {
         try {
           const response = await axios.get(getApiUrl(bookingId));
@@ -132,6 +178,8 @@ export default function BookingDetails() {
           setCurrentPosition(getCurrentStepIndex(response.data.status));
         } catch (error: any) {
           console.log(error.message);
+        } finally {
+          setLoading(false);
         }
       }
     })();
@@ -178,6 +226,34 @@ export default function BookingDetails() {
     return <Text style={position === currentPosition ? styles.stepLabelSelected : styles.stepLabel}>{label}</Text>;
   };
 
+  const showCancelAlert = async () => {
+    Alert.alert('Xác nhận hủy', 'Bạn có chắc bạn muốn hủy??', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: handleCancel,
+        style: 'default',
+      },
+    ]);
+  };
+
+  const showConfirmAlert = async () => {
+    Alert.alert('Xác nhận thanh toán', 'Trước khi thanh toán, bạn vui lòng kiểm tra thông tin. Xin cảm ơn!', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: handleConfirm,
+        style: 'default',
+      },
+    ]);
+  };
+
   return (
     <>
       <View style={styles.header}>
@@ -187,87 +263,97 @@ export default function BookingDetails() {
         <Text style={styles.headerTitle}>Booking Tracking</Text>
       </View>
       <ScrollView>
-        <View style={{ backgroundColor: '#F8F4FA', marginBottom: 20, gap: 20, minHeight: 650 }}>
-          {data && (
-            <>
-              <View style={styles.nameAndAddress}>
-                <Text style={styles.roomName}>{data.room.roomName}</Text>
-                <Text style={styles.address}>{data.room.address}</Text>
-              </View>
-              <View style={styles.stepIndicator}>
-                <StepIndicator
-                  stepCount={4}
-                  customStyles={firstIndicatorStyles}
-                  currentPosition={currentPosition}
-                  labels={stepLabels}
-                  renderLabel={renderLabel}
-                />
-                <View style={styles.confirmOrCancelBtnWrapper}>
-                  {isApproving && (
-                    <TouchableOpacity style={styles.confirmOrCancelBtn} onPress={handleCancel}>
-                      <Text style={styles.confirmOrCancelBtnText}>Cancel</Text>
-                    </TouchableOpacity>
-                  )}
-                  {isAccepted && (
-                    <TouchableOpacity style={styles.confirmOrCancelBtn} onPress={handleConfirm}>
-                      <Text style={styles.confirmOrCancelBtnText}>Confirm</Text>
-                    </TouchableOpacity>
-                  )}
+        {loading ? (
+          <BookingDetailsSkelecton />
+        ) : (
+          <View style={{ backgroundColor: '#F8F4FA', marginBottom: 20, gap: 20, minHeight: 650 }}>
+            {data && (
+              <>
+                <View style={styles.nameAndAddress}>
+                  <Text style={styles.roomName}>{data.room.roomName}</Text>
+                  <Text style={styles.address}>{data.room.address}</Text>
                 </View>
-              </View>
-              <Card containerStyle={{ marginTop: 0 }}>
-                <View style={styles.infoCtn}>
-                  <Text style={styles.cardTitle}>Service</Text>
-                  {data.bookingDetails.map((item: any) => {
-                    return (
-                      <View style={styles.inforWrapper}>
-                        <Text style={styles.infoContent}>
-                          {item.service.serviceName} × {item.serviceQuantity}
-                        </Text>
-                        <Text style={styles.infoData}>
-                          {formatVNPrice(parseInt(item.service.price) * parseInt(item.serviceQuantity))}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-                <View style={[styles.infoCtn, { marginTop: 20 }]}>
-                  <Text style={styles.cardTitle}>Check-in information</Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.infoContent}>Customer name: </Text>
-                    <Text style={styles.infoData}>{data.customerName}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.infoContent}>Start time: </Text>
-                    <Text style={styles.infoData}>{formatVNDate(data.startTime)}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.infoContent}>End time: </Text>
-                    <Text style={styles.infoData}>{formatVNDate(data.endTime)}</Text>
-                  </View>
-                </View>
-                <View style={[styles.infoCtn, { marginTop: 20 }]}>
-                  <Text style={styles.cardTitle}>Check-in information</Text>
-                  <View style={styles.inforWrapper}>
-                    <Text style={styles.infoContent}>
-                      {formatVNPrice(data.room.price)} × {hours} hour(s)
+                <View style={styles.stepIndicator}>
+                  {!isRejected ? (
+                    <StepIndicator
+                      stepCount={4}
+                      customStyles={firstIndicatorStyles}
+                      currentPosition={currentPosition}
+                      labels={stepLabels}
+                      renderLabel={renderLabel}
+                    />
+                  ) : (
+                    <Text style={{ textAlign: 'center', fontSize: 30, fontWeight: 'bold', color: 'red' }}>
+                      REJECTED!
                     </Text>
-                    <Text style={styles.infoData}>{formatVNPrice(priceRoom)}</Text>
+                  )}
+                  <View style={styles.confirmOrCancelBtnWrapper}>
+                    {isApproving && (
+                      <TouchableOpacity style={styles.confirmOrCancelBtn} onPress={showCancelAlert}>
+                        <Text style={styles.confirmOrCancelBtnText}>Cancel</Text>
+                      </TouchableOpacity>
+                    )}
+                    {isAccepted && (
+                      <TouchableOpacity style={styles.confirmOrCancelBtn} onPress={showConfirmAlert}>
+                        <Text style={styles.confirmOrCancelBtnText}>Confirm</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
+                </View>
+                <Card containerStyle={{ marginTop: 0 }}>
+                  <View style={styles.infoCtn}>
+                    <Text style={styles.cardTitle}>Service</Text>
+                    {data.bookingDetails.map((item: any, index: any) => {
+                      return (
+                        <View style={styles.inforWrapper} key={index}>
+                          <Text style={styles.infoContent}>
+                            {item.service.serviceName} × {item.serviceQuantity}
+                          </Text>
+                          <Text style={styles.infoData}>
+                            {formatVNPrice(parseInt(item.service.price) * parseInt(item.serviceQuantity))}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                  <View style={[styles.infoCtn, { marginTop: 20 }]}>
+                    <Text style={styles.cardTitle}>Check-in information</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={styles.infoContent}>Customer name: </Text>
+                      <Text style={styles.infoData}>{data.customerName}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={styles.infoContent}>Start time: </Text>
+                      <Text style={styles.infoData}>{formatVNDate(data.startTime)}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={styles.infoContent}>End time: </Text>
+                      <Text style={styles.infoData}>{formatVNDate(data.endTime)}</Text>
+                    </View>
+                  </View>
+                  <View style={[styles.infoCtn, { marginTop: 20 }]}>
+                    <Text style={styles.cardTitle}>Check-in information</Text>
+                    <View style={styles.inforWrapper}>
+                      <Text style={styles.infoContent}>
+                        {formatVNPrice(data.room.price)} × {hours} hour(s)
+                      </Text>
+                      <Text style={styles.infoData}>{formatVNPrice(priceRoom)}</Text>
+                    </View>
+                    <View style={styles.inforWrapper}>
+                      <Text style={styles.infoContent}>Service fee</Text>
+                      <Text style={styles.infoData}>{formatVNPrice(servicePrice)}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.dashLine}></View>
                   <View style={styles.inforWrapper}>
-                    <Text style={styles.infoContent}>Service fee</Text>
-                    <Text style={styles.infoData}>{formatVNPrice(servicePrice)}</Text>
+                    <Text style={[styles.infoContent, { fontSize: 27 }]}>Total</Text>
+                    <Text style={{ fontSize: 27 }}>{formatVNPrice(data.totalPrice)}</Text>
                   </View>
-                </View>
-                <View style={styles.dashLine}></View>
-                <View style={styles.inforWrapper}>
-                  <Text style={[styles.infoContent, { fontSize: 27 }]}>Total</Text>
-                  <Text style={{ fontSize: 27 }}>{formatVNPrice(data.totalPrice)}</Text>
-                </View>
-              </Card>
-            </>
-          )}
-        </View>
+                </Card>
+              </>
+            )}
+          </View>
+        )}
       </ScrollView>
     </>
   );

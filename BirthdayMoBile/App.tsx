@@ -17,8 +17,11 @@ import RoomSearch from './screen/RoomSearch';
 import BookingDetails from './screen/User/BookingHistory/BookingDetails';
 import BookingHistoryList from './screen/User/BookingHistory/BookingHistoryList';
 import RoomDetails from './screen/User/RoomDetail/RoomDetails';
-import { getData, logout } from './utils/asyncStorage';
+import TransactionHistoryScreen from './screen/User/Wallet/TransactionHistoryScreen';
+import Wallet from './screen/User/Wallet/Wallet';
+
 import ToastManager from 'toastify-react-native';
+import { getData, logout } from './utils/asyncStorage';
 const navigationRef = createRef<NavigationContainerRef<string>>()
 const nav = () => navigationRef.current
 
@@ -154,6 +157,26 @@ export default function App() {
     )
   };
 
+
+  const WalletNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="Wallet" component={Wallet} />
+      </Stack.Navigator>
+    )
+  };
+  const TransactionHistoryScreenNav = () => {
+    return (
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+      }}>
+        <Stack.Screen name="TransactionHistoryScreen" component={TransactionHistoryScreen} />
+      </Stack.Navigator>
+    )
+  };
+
   //Every pages landed into the BottomTabs here in terms of StackNav, but only show what needed
   const TabNav = () => {
     return (
@@ -207,6 +230,8 @@ export default function App() {
         drawerContent={(props) => <CustomDrawerContent {...props} nav={nav} />}
       >
         <Drawer.Screen name='Home' component={TabNav} />
+        <Drawer.Screen name='TransactionHistory' component={TransactionHistoryScreen} />
+
       </Drawer.Navigator>
     )
   }
@@ -242,6 +267,19 @@ export default function App() {
           )}
           onPress={() => props.navigation.navigate('BookingHistoryListNav')}
         />
+
+        <DrawerItem
+          key='wallet'
+          label={() => (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name={'wallet'} style={styles.icon} />
+              <Text style={{ fontSize: 20 }}>
+                Ví của tôi
+              </Text>
+            </View>
+          )}
+          onPress={() => props.navigation.navigate('WalletNav')}
+        />
         <DrawerItem
           key='logout'
           label={() => (
@@ -272,6 +310,10 @@ export default function App() {
               options={{ title: 'Tìm phòng', headerStyle: { backgroundColor: 'rgb(74,67,236)' } }} />
             <Stack.Screen name='RoomDetailNav' component={RoomDetails}
               options={{ title: 'Chi tiết phòng', headerStyle: { backgroundColor: 'rgb(74,67,236)' } }} />
+            <Stack.Screen name='WalletNav' component={WalletNav} 
+            options={{ title: 'Ví của tôi', headerStyle: { backgroundColor: 'rgb(74,67,236)' } }}/>
+            <Stack.Screen name='TransactionHistoryScreenNav' component={TransactionHistoryScreenNav} 
+            options={{ title: 'Lịch sử giao dịch', headerStyle: { backgroundColor: 'rgb(74,67,236)' } }}/>
           </Stack.Navigator>
         </NavigationContainer>
       </View>

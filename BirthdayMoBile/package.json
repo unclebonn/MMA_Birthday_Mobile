@@ -31,6 +31,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-vector-icons": "^10.0.3",
     "toastify-react-native": "^5.0.0",
+    "react-native-webview": "^13.6.4",
+    "version": "^0.1.2",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

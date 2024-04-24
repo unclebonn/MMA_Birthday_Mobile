@@ -51,7 +51,7 @@ const ProfileScreen: React.FC = () => {
       </Pressable>
       <View style={styles.aboutContainer}>
         <Text style={styles.sectionHeader}>Giới thiệu về tôi</Text>
-       <Text style={styles.aboutText}>Một bữa tiệc, hoặc party, là một sự kiện xã hội hoặc lễ hội được tổ chức để kỷ niệm, vui chơi, gặp gỡ bạn bè hoặc gia đình, hoặc đơn giản là để thư giãn và giải trí. Các loại bữa tiệc có thể khác nhau tùy thuộc vào mục đích và phong cách của sự kiện.</Text>
+       <Text style={styles.aboutText}>Tôi là người Việt Nam</Text>
       </View>
 
       <Modal visible={editingProfile} animationType="slide">

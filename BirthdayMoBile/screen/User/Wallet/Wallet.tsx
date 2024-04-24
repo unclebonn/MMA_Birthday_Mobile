@@ -18,9 +18,7 @@ const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const response = await axios.get(
-          'https://party-renting-platform-aa30573d1765.herokuapp.com/api/profile/balance'
-        );
+        const response = await axios.get('https://party-renting-platform-aa30573d1765.herokuapp.com/api/profile/balance');
         setBalance(response.data);
       } catch (error) {
         console.error('Error fetching balance:', error);
@@ -37,10 +35,9 @@ const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
     try {
       const paymentData = {
         price: parseFloat(amount),
-        returnUrl: 'string',
+        returnUrl: "string"
       };
 
-<<<<<<< HEAD
       const response = await axios.post('https://party-renting-platform-aa30573d1765.herokuapp.com/api/vnpay/payment', paymentData);
       setPaymentUrl(response.data);
       // console.log(paymentUrl);
@@ -48,13 +45,6 @@ const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
       setShowPayment(false);
       setShowBalance(false);
       setDisableButtons(true); 
-=======
-      const response = await axios.post(
-        'https://party-renting-platform-aa30573d1765.herokuapp.com/api/vnpay/payment',
-        paymentData
-      );
-      setPaymentUrl(response.data);
->>>>>>> f06a0c83123a178b3f626f15dc039a5ed4229562
     } catch (error) {
       console.error('Error making payment:', error);
       Alert.alert('Thông báo', 'Có lỗi xảy ra khi tạo yêu cầu thanh toán');
@@ -63,7 +53,7 @@ const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
     }
   };
 
-  const formatBalance = (balance: any) => {
+  const formatBalance = (balance) => {
     if (!balance) return '';
     return balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
@@ -74,7 +64,6 @@ const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
       <ScrollView
         style={styles.transactionContainer}
         showsVerticalScrollIndicator={false}
@@ -139,24 +128,6 @@ const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
           </>
         )}
       </ScrollView>
-=======
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <>
-          <Text style={styles.balanceText}>Số dư của bạn: {formatBalance(balance)} đ</Text>
-          <TextInput
-            style={styles.input}
-            value={amount}
-            onChangeText={setAmount}
-            placeholder="Nhập số tiền cần nạp"
-            keyboardType="numeric"
-          />
-          <Button title="Nạp tiền" onPress={handlePayment} disabled={paymentLoading || !amount} />
-          {paymentUrl && <WebView source={{ uri: paymentUrl }} style={{ flex: 1, width: 400 }} />}
-        </>
-      )}
->>>>>>> f06a0c83123a178b3f626f15dc039a5ed4229562
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import { Image } from '@rneui/base';
+import { Divider, Image } from '@rneui/base';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button, FlatList, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -142,12 +142,13 @@ export default function RoomDetails({ route, navigation }: any) {
             .then((res) => {
                 if (res.status === 201) {
                     Toast.success("Đặt phòng thành công")
-                    navigation.navigate("Home")
+
+                    navigation.navigate("DrawerNav")
                 }
 
             })
             .catch((eror) => {
-                Toast.error("Đặt phòng thất bại","top")
+                Toast.error("Đặt phòng thất bại", "top")
             })
 
 
@@ -157,7 +158,7 @@ export default function RoomDetails({ route, navigation }: any) {
 
     const renderService = ({ item }: any) => {
         return (
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", borderWidth: 1, marginVertical: 2, padding: 5 }}>
                 <View>
                     <Text>{item.serviceName}</Text>
                     <Text>Giá tiền: {item.price}</Text>

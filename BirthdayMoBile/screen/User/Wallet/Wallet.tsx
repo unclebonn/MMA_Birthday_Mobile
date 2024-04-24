@@ -5,7 +5,7 @@ import { NavigationContainerRef } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
+const Wallet = ({ navigation }: { navigation: NavigationContainerRef<any> }) => {
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -53,8 +53,8 @@ const Wallet = ({ navigation }: { navigation: NavigationContainerRef }) => {
     }
   };
 
-  const formatBalance = (balance) => {
-    if (!balance) return '';
+  const formatBalance = (balance: number | null) => {
+    if (!balance) return '0';
     return balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 

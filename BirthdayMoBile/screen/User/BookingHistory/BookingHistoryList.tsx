@@ -88,7 +88,7 @@ function BookingSkelection() {
 let prePage = 0;
 function getApiUrl(page: number): string {
   prePage = page;
-  return `https://party-renting-platform-aa30573d1765.herokuapp.com/api/bookings/customer?page=${page}&size=4&sort=bookTime,desc`;
+  return `https://party-renting-platform-aa30573d1765.herokuapp.com/api/bookings/customer?page=${page}&size=4&sort=startTime,desc`;
 }
 
 function BookingHistoryList() {
@@ -210,7 +210,7 @@ function BookingHistoryList() {
                         </View>
                         <View style={styles.infoItem}>
                           <Text style={[styles.textInfoItem, { fontWeight: 'bold' }]}>Ngày đặt: </Text>
-                          <Text style={styles.textInfoItem}>{formatVNDate(item.bookTime)}</Text>
+                          <Text style={styles.textInfoItem}>{formatVNDate(item.startTime)}</Text>
                         </View>
                       </View>
                       <View>
